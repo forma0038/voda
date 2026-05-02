@@ -1,0 +1,3027 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0d0d0d">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<title>ТП</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0d0d;
+    --surface: #17181a;
+    --surface-2: #1f2123;
+    --border: #2a2c2f;
+    --text: #e7e7e7;
+    --text-dim: #8b8d91;
+    --text-faint: #555;
+    --accent: #4a9eff;
+    --red: #ef4444;
+    --orange: #f59e0b;
+    --yellow: #eab308;
+    --green: #10b981;
+    --green-soft: rgba(16, 185, 129, 0.15);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Inter", sans-serif;
+    font-size: 17px;
+    line-height: 1.5;
+    padding: 32px 56px 100px;
+    max-width: 1320px;
+    margin: 0 auto;
+  }
+  .hidden { display: none !important; }
+
+  header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 28px;
+    padding-bottom: 18px;
+    border-bottom: 1px solid var(--border);
+  }
+  .brand { display: flex; align-items: center; gap: 14px; }
+  h1 {
+    font-size: 30px; font-weight: 600; letter-spacing: -0.4px;
+    background: linear-gradient(135deg, #e7e7e7, #94a3b8);
+    -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+  }
+  .actions { display: flex; gap: 8px; }
+  .btn {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 15px;
+    font-family: inherit;
+  }
+  .btn:hover { background: var(--surface-2); }
+  .btn-primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .btn-primary:hover { background: #3b8dee; }
+  .btn-danger { background: transparent; border-color: rgba(239, 68, 68, 0.45); color: var(--red); }
+  .btn-danger:hover { background: rgba(239, 68, 68, 0.08); }
+  .btn-warn { background: var(--orange); border-color: var(--orange); color: #1a1300; font-weight: 600; }
+  .btn-warn:hover { background: #e08906; border-color: #e08906; }
+
+  /* Backup reminder banner */
+  .backup-reminder {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    background: linear-gradient(135deg, rgba(245, 158, 11, 0.12), rgba(245, 158, 11, 0.04));
+    border: 1px solid rgba(245, 158, 11, 0.45);
+    border-radius: 12px;
+    padding: 14px 20px;
+    margin-bottom: 22px;
+    color: #fcd34d;
+    font-size: 15px;
+  }
+  .backup-reminder-text { display: flex; align-items: center; gap: 12px; }
+  .backup-reminder-icon { color: var(--orange); font-size: 12px; line-height: 1; }
+  .backup-reminder b { color: #fff; font-weight: 700; }
+  .backup-reminder-actions { display: flex; gap: 8px; flex-shrink: 0; }
+
+  /* Empty state */
+  .empty-state {
+    text-align: center;
+    padding: 100px 24px;
+  }
+  .empty-state h2 { font-size: 34px; font-weight: 600; letter-spacing: -0.5px; margin-bottom: 12px; }
+  .empty-state p { color: var(--text-dim); font-size: 17px; max-width: 540px; margin: 0 auto 36px; line-height: 1.5; }
+  .empty-state .cta-row { display: flex; gap: 12px; justify-content: center; }
+  .empty-state .btn { padding: 14px 28px; font-size: 16px; }
+
+  /* Session report */
+  .session-report {
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.08), rgba(16, 185, 129, 0.02));
+    border: 1px solid rgba(16, 185, 129, 0.25);
+    border-radius: 14px;
+    padding: 20px 24px;
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+  .mode-switch {
+    display: flex;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 3px;
+    gap: 2px;
+  }
+  .mode-switch button {
+    background: transparent; border: none; color: var(--text-dim);
+    padding: 11px 26px; font-size: 15px; font-weight: 600;
+    letter-spacing: 0.5px; border-radius: 7px; cursor: pointer;
+    font-family: inherit; transition: all 0.15s;
+  }
+  .mode-switch button.active { background: var(--accent); color: #fff; }
+  .btn-report {
+    background: var(--green);
+    border: 1px solid var(--green);
+    color: #fff;
+    padding: 16px 32px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 17px;
+    font-weight: 600;
+    font-family: inherit;
+    letter-spacing: 0.2px;
+    box-shadow: 0 4px 14px rgba(16, 185, 129, 0.25);
+    transition: all 0.15s;
+    margin-left: auto;
+  }
+  .btn-report:hover { background: #0ea671; transform: translateY(-1px); box-shadow: 0 6px 18px rgba(16, 185, 129, 0.35); }
+  .btn-report:active { transform: translateY(0); }
+
+  /* Today block */
+  .today-block {
+    display: grid;
+    grid-template-columns: 1.6fr 1fr;
+    gap: 0;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    margin-bottom: 16px;
+    overflow: hidden;
+  }
+  .today-goal { padding: 22px 24px; }
+  .today-task {
+    padding: 22px 24px;
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+  .today-task-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 16px;
+  }
+  .today-task-title {
+    font-size: 24px;
+    font-weight: 600;
+    letter-spacing: -0.3px;
+    line-height: 1.15;
+  }
+  .today-task-date {
+    font-size: 14px;
+    color: var(--text-dim);
+  }
+  .today-task-body {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    flex: 1;
+  }
+  .today-task-value {
+    font-size: 64px;
+    font-weight: 600;
+    letter-spacing: -2.5px;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.35));
+  }
+  .today-task-value.red    { background-image: linear-gradient(135deg, #9f1239 0%, #fda4af 70%, #fecdd3 100%); }
+  .today-task-value.orange { background-image: linear-gradient(135deg, #ef4444 0%, #fca5a5 70%, #fee2e2 100%); }
+  .today-task-value.yellow { background-image: linear-gradient(135deg, #eab308 0%, #fde047 60%, #fef9c3 100%); }
+  .today-task-value.green  { background-image: linear-gradient(135deg, #10b981 0%, #6ee7b7 70%, #d1fae5 100%); }
+  .today-task-text {
+    font-size: 24px;
+    font-weight: 500;
+    letter-spacing: -0.3px;
+    line-height: 1.35;
+    flex: 1;
+  }
+  .today-goal { display: flex; flex-direction: column; justify-content: space-between; }
+  .today-goal-header {
+    display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 14px;
+  }
+  .today-goal-header .edit-link {
+    font-size: 12px; color: var(--accent); text-decoration: none; cursor: pointer;
+  }
+  .today-goal-header .edit-link:hover { text-decoration: underline; }
+  .today-goal-row {
+    display: flex; align-items: baseline; gap: 14px; margin-bottom: 12px;
+  }
+  .today-goal-count {
+    font-size: 42px; font-weight: 600;
+    letter-spacing: -1px; line-height: 1;
+    font-variant-numeric: tabular-nums;
+  }
+  .today-goal-count .of { font-size: 20px; color: var(--text-dim); font-weight: 400; }
+  .today-goal-pct {
+    font-size: 18px; font-weight: 600; color: var(--green);
+    margin-left: auto; font-variant-numeric: tabular-nums;
+  }
+  .today-goal-pct.over { color: #fde047; }
+
+  /* Dashboard */
+  .dashboard {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 22px 24px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 180px;
+  }
+  .card-label {
+    font-size: 13px; color: var(--text-dim);
+    text-transform: uppercase; letter-spacing: 0.8px; font-weight: 600;
+  }
+  .card-value {
+    font-size: 52px; font-weight: 600;
+    letter-spacing: -1.2px; line-height: 1;
+    font-variant-numeric: tabular-nums;
+  }
+  .card-sub { font-size: 14px; color: var(--text-dim); margin-top: 6px; }
+
+  .hero { display: grid; grid-template-columns: auto 1fr; gap: 24px; align-items: center; }
+  .ring-wrap { position: relative; width: 130px; height: 130px; }
+  .ring-wrap svg { transform: rotate(-90deg); }
+  .ring-bg { stroke: var(--border); fill: none; stroke-width: 12; }
+  .ring-fg { stroke: var(--green); fill: none; stroke-width: 12; stroke-linecap: round; transition: stroke-dashoffset 0.8s ease; }
+  .ring-label {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+  }
+  .ring-pct { font-size: 28px; font-weight: 600; letter-spacing: -0.8px; }
+  .ring-pct-sub { font-size: 11px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.6px; }
+  .hero-info { display: flex; flex-direction: column; gap: 4px; }
+  .hero-info .card-value { font-size: 40px; }
+  .hero-info .delta-row {
+    display: flex; gap: 14px; margin-top: 10px;
+    font-size: 13px; color: var(--text-dim);
+  }
+  .hero-info .delta-row b { color: var(--text); font-weight: 500; font-variant-numeric: tabular-nums; }
+  .hero-info .delta-row .delta-green { color: var(--green); }
+
+  .streak-icon { display: inline-block; width: 22px; height: 22px; vertical-align: -4px; margin-right: 4px; }
+
+  .bar {
+    width: 100%; height: 6px;
+    background: var(--surface-2);
+    border-radius: 3px; overflow: hidden; margin-top: 10px;
+  }
+  .bar-fill { height: 100%; background: var(--green); border-radius: 3px; transition: width 0.4s ease; }
+  .bar-fill.blue { background: var(--accent); }
+
+  /* Secondary */
+  .secondary {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+  .heatmap-card, .chart-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 20px 22px;
+  }
+
+  .heatmap {
+    display: grid;
+    grid-template-columns: repeat(15, 1fr);
+    gap: 4px;
+    margin-top: 14px;
+  }
+  .day {
+    aspect-ratio: 1;
+    border-radius: 4px;
+    background: var(--surface-2);
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .day.inactive {
+    background: transparent;
+    border: 1px dashed rgba(90, 92, 96, 0.3);
+  }
+  .day.l1 { background: #0f3a2a; }
+  .day.l2 { background: #0f7746; }
+  .day.l3 { background: #10b981; }
+  .day.l4 { background: #34d399; }
+  .day.l5 {
+    background: linear-gradient(135deg, #059669 0%, #10b981 50%, #34d399 100%);
+    box-shadow: 0 0 14px rgba(52, 211, 153, 0.7), inset 0 0 4px rgba(255,255,255,0.4);
+  }
+  .day.l5 .emerald { width: 70%; height: 70%; filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.35)); }
+  .day.today { outline: 2px solid var(--accent); outline-offset: 1px; }
+
+  .heatmap-footer {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-top: 14px; font-size: 11px; color: var(--text-dim);
+  }
+  .legend { display: flex; gap: 8px; align-items: center; }
+  .legend .day { width: 22px; height: 22px; aspect-ratio: unset; }
+  .legend-label { font-size: 12px; }
+
+  /* Weekly sparkline */
+  .spark { margin-top: 14px; }
+  .spark svg { width: 100%; height: 80px; display: block; }
+  .spark .spark-line { stroke: var(--green); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  .spark .spark-area { fill: var(--green-soft); stroke: none; }
+  .spark .dot { fill: var(--green); }
+  .spark-labels {
+    display: flex; justify-content: space-between;
+    font-size: 10px; color: var(--text-dim); margin-top: 6px;
+  }
+
+  /* Zones */
+  .zones-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 20px 22px;
+    margin-bottom: 40px;
+  }
+  .zones-title {
+    font-size: 12px; color: var(--text-dim);
+    text-transform: uppercase; letter-spacing: 0.8px; font-weight: 600;
+    margin-bottom: 16px;
+  }
+  .zones {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+  }
+  .zone {
+    padding: 18px 20px; border-radius: 12px;
+    border: 1px solid var(--border);
+    position: relative; overflow: hidden;
+    transition: filter 0.15s;
+  }
+  .zone:hover { filter: brightness(1.12); }
+  .zone-bar { position: absolute; left: 0; top: 0; bottom: 0; width: 5px; }
+  .zone .count {
+    font-size: 40px; font-weight: 600;
+    letter-spacing: -0.5px; font-variant-numeric: tabular-nums;
+  }
+  .zone .label { font-size: 13px; color: var(--text-dim); margin-top: 6px; }
+
+  .zone.red {
+    background:
+      linear-gradient(135deg, rgba(159, 18, 57, 0.62) 0%, rgba(159, 18, 57, 0.26) 45%, rgba(159, 18, 57, 0.1) 100%),
+      var(--surface);
+    border-color: rgba(159, 18, 57, 0.8);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.1),
+      inset 0 -28px 38px -20px rgba(0, 0, 0, 0.4),
+      0 6px 24px -8px rgba(159, 18, 57, 0.42);
+  }
+  .zone.red .zone-bar { background: #9f1239; box-shadow: 0 0 18px rgba(159, 18, 57, 0.9); }
+  .zone.red .count { color: #fda4af; text-shadow: 0 1px 2px rgba(0,0,0,0.5); }
+
+  .zone.orange {
+    background:
+      linear-gradient(135deg, rgba(239, 68, 68, 0.55) 0%, rgba(239, 68, 68, 0.22) 45%, rgba(239, 68, 68, 0.08) 100%),
+      var(--surface);
+    border-color: rgba(239, 68, 68, 0.75);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.12),
+      inset 0 -28px 38px -20px rgba(0, 0, 0, 0.35),
+      0 6px 24px -8px rgba(239, 68, 68, 0.38);
+  }
+  .zone.orange .zone-bar { background: #ef4444; box-shadow: 0 0 18px rgba(239, 68, 68, 0.85); }
+  .zone.orange .count { color: #fca5a5; text-shadow: 0 1px 2px rgba(0,0,0,0.45); }
+
+  .zone.yellow {
+    background:
+      linear-gradient(135deg, rgba(234, 179, 8, 0.5) 0%, rgba(234, 179, 8, 0.2) 45%, rgba(234, 179, 8, 0.07) 100%),
+      var(--surface);
+    border-color: rgba(234, 179, 8, 0.72);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.13),
+      inset 0 -28px 38px -20px rgba(0, 0, 0, 0.35),
+      0 6px 24px -8px rgba(234, 179, 8, 0.32);
+  }
+  .zone.yellow .zone-bar { background: var(--yellow); box-shadow: 0 0 18px rgba(234, 179, 8, 0.8); }
+  .zone.yellow .count { color: #fde047; text-shadow: 0 1px 2px rgba(0,0,0,0.45); }
+
+  .zone.green {
+    background:
+      linear-gradient(135deg, rgba(16, 185, 129, 0.55) 0%, rgba(16, 185, 129, 0.22) 45%, rgba(16, 185, 129, 0.08) 100%),
+      var(--surface);
+    border-color: rgba(16, 185, 129, 0.75);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.13),
+      inset 0 -28px 38px -20px rgba(0, 0, 0, 0.35),
+      0 6px 24px -8px rgba(16, 185, 129, 0.38);
+  }
+  .zone.green .zone-bar { background: var(--green); box-shadow: 0 0 18px rgba(16, 185, 129, 0.85); }
+  .zone.green .count { color: #6ee7b7; text-shadow: 0 1px 2px rgba(0,0,0,0.45); }
+
+  /* Sections */
+  .section { margin-bottom: 48px; }
+  .section-header {
+    display: flex; align-items: baseline; justify-content: space-between;
+    margin-bottom: 16px;
+  }
+  .section-title { font-size: 26px; font-weight: 600; letter-spacing: -0.3px; }
+  .section-meta { font-size: 14px; color: var(--text-dim); }
+
+  .show-more {
+    background: transparent;
+    border: 1px dashed var(--border);
+    color: var(--text-dim);
+    padding: 12px 24px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 14px;
+    font-family: inherit;
+    margin-top: 8px;
+    width: 100%;
+    transition: all 0.12s;
+  }
+  .show-more:hover { color: var(--text); border-color: var(--accent); border-style: solid; }
+
+  .problem-list { display: flex; flex-direction: column; gap: 6px; }
+  .problem {
+    display: grid;
+    grid-template-columns: 4px 36px 1fr 64px 50px;
+    align-items: center;
+    gap: 16px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 18px 14px 0;
+    cursor: pointer;
+    transition: background 0.12s;
+  }
+  .problem:hover { background: var(--surface-2); }
+  .problem-stripe { width: 4px; border-radius: 10px 0 0 10px; align-self: stretch; }
+  .priority { font-size: 11px; text-align: center; font-weight: 700; letter-spacing: 1px; }
+  .priority-high { color: var(--red); }
+  .priority-med { color: var(--orange); }
+  .priority-low { color: var(--text-faint); }
+  .problem-body { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+  .problem-text { font-size: 17px; line-height: 1.35; }
+  .problem-progress {
+    display: flex; align-items: center; gap: 10px;
+    font-size: 11px; color: var(--text-faint);
+    font-variant-numeric: tabular-nums;
+  }
+  .mini-bar {
+    flex: 1; height: 4px;
+    background: var(--surface-2);
+    border-radius: 2px; overflow: hidden;
+  }
+  .mini-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #9f1239, #ef4444, #eab308, #10b981);
+    background-size: 240px 100%;
+    border-radius: 2px;
+    transition: width 0.4s ease;
+  }
+  .problem-value {
+    font-size: 24px; font-weight: 600;
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+  .problem-trend { font-size: 11px; color: var(--text-dim); text-align: center; }
+
+  .v-red { color: #fda4af; }
+  .v-orange { color: #fca5a5; }
+  .v-yellow { color: #fde047; }
+  .v-green { color: #6ee7b7; }
+  .stripe-red { background: #9f1239; box-shadow: 0 0 6px rgba(159, 18, 57, 0.5); }
+  .stripe-orange { background: #ef4444; box-shadow: 0 0 6px rgba(239, 68, 68, 0.5); }
+  .stripe-yellow { background: var(--yellow); box-shadow: 0 0 6px rgba(234, 179, 8, 0.4); }
+  .stripe-green { background: var(--green); box-shadow: 0 0 6px rgba(16, 185, 129, 0.5); }
+
+  .resolved-section { margin-top: 24px; }
+  .resolved-toggle {
+    display: flex; align-items: center; gap: 8px;
+    color: var(--green); font-size: 15px; font-weight: 500;
+    cursor: pointer; user-select: none; padding: 10px 0;
+  }
+  .resolved-toggle:hover { filter: brightness(1.15); }
+  .resolved-list { display: none; flex-direction: column; gap: 6px; }
+  .resolved-list.open { display: flex; margin-top: 8px; }
+  .resolved-list .problem {
+    background: rgba(16, 185, 129, 0.06);
+    border-color: rgba(16, 185, 129, 0.25);
+  }
+  .resolved-list .problem:hover { background: rgba(16, 185, 129, 0.12); }
+
+  /* Modals */
+  .modal-backdrop {
+    display: none;
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.7);
+    align-items: center; justify-content: center;
+    z-index: 100; padding: 24px;
+  }
+  .modal-backdrop.open { display: flex; }
+  .modal {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 28px;
+    width: 520px; max-width: 100%;
+    max-height: 90vh; overflow-y: auto;
+  }
+  .modal-large { width: 720px; }
+  .modal h2 { font-size: 22px; font-weight: 600; margin-bottom: 6px; letter-spacing: -0.3px; }
+  .modal-hint { font-size: 13px; color: var(--text-dim); margin-bottom: 20px; line-height: 1.5; }
+  .modal-row { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
+  .modal-row label { font-size: 13px; color: var(--text-dim); font-weight: 500; }
+  .modal-row-inline { flex-direction: row; align-items: center; gap: 16px; }
+  .modal-row input[type="text"], .modal-row select, .modal textarea, .modal-row input[type="number"] {
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 11px 14px;
+    border-radius: 8px;
+    font-size: 15px;
+    font-family: inherit;
+    width: 100%;
+  }
+  .modal textarea { resize: vertical; min-height: 200px; font-size: 14px; line-height: 1.5; }
+  .modal-row input:focus, .modal-row select:focus, .modal textarea:focus {
+    outline: none; border-color: var(--accent);
+  }
+  .radio-group { display: flex; gap: 16px; }
+  .radio-group label {
+    display: flex; align-items: center; gap: 6px;
+    cursor: pointer; color: var(--text); font-size: 15px;
+    font-weight: 400;
+  }
+  .radio-group input { accent-color: var(--accent); }
+  .modal-actions {
+    display: flex; justify-content: flex-end; gap: 10px;
+    margin-top: 24px;
+  }
+  .modal-problem-text {
+    font-size: 17px; font-weight: 500;
+    margin-bottom: 18px; line-height: 1.4;
+  }
+  .modal-history {
+    font-size: 13px; color: var(--text-dim);
+    margin-bottom: 16px;
+    font-variant-numeric: tabular-nums;
+  }
+  .value-grid {
+    display: grid;
+    grid-template-columns: repeat(11, 1fr);
+    gap: 5px;
+    margin-bottom: 8px;
+  }
+  .val-btn {
+    aspect-ratio: 1;
+    border: 1px solid var(--border);
+    background: var(--surface-2);
+    color: var(--text);
+    border-radius: 7px;
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: 600;
+    font-family: inherit;
+    transition: all 0.1s;
+  }
+  .val-btn:hover { border-color: var(--accent); background: rgba(74, 158, 255, 0.1); }
+  .val-btn.current { background: var(--surface); border-color: var(--text-dim); }
+  .val-btn.zero { border-color: var(--green); }
+  .val-btn.zero:hover { background: rgba(16, 185, 129, 0.15); }
+
+  .toast {
+    position: fixed;
+    bottom: 24px; left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    background: var(--green);
+    color: #fff;
+    padding: 14px 24px;
+    border-radius: 10px;
+    box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+    font-weight: 500;
+    font-size: 15px;
+    transition: transform 0.3s ease;
+    z-index: 200;
+  }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+
+  /* ============ Экраны блокировки и иконка-кнопка ============ */
+  .btn-icon {
+    padding: 10px 12px;
+    font-size: 18px;
+    line-height: 1;
+  }
+  /* Облако-кнопка: без фона/рамки, само облако цветное */
+  .yadisk-btn {
+    background: transparent;
+    border: none;
+    padding: 4px 8px;
+    margin: 0;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.15s, filter 0.2s;
+    color: var(--text-faint);
+  }
+  .yadisk-btn:hover {
+    transform: translateY(-1px);
+    filter: brightness(1.15);
+  }
+  .yadisk-icon {
+    display: block;
+    width: 32px;
+    height: 32px;
+    transition: filter 0.2s;
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3));
+  }
+  .yadisk-btn.unconnected { color: #6b7280; }
+  .yadisk-btn.synced { color: #10b981; }
+  .yadisk-btn.synced .yadisk-icon { filter: drop-shadow(0 0 6px rgba(16, 185, 129, 0.55)); }
+  .yadisk-btn.syncing { color: #4a9eff; animation: yadiskPulse 1.4s ease-in-out infinite; }
+  .yadisk-btn.error { color: #ef4444; }
+  .yadisk-btn.error .yadisk-icon { filter: drop-shadow(0 0 8px rgba(239, 68, 68, 0.6)); }
+  @keyframes yadiskPulse {
+    0%, 100% { filter: drop-shadow(0 0 4px rgba(74, 158, 255, 0.3)); }
+    50% { filter: drop-shadow(0 0 12px rgba(74, 158, 255, 0.7)); }
+  }
+  .lock-screen {
+    position: fixed;
+    inset: 0;
+    background: #0d0d0d;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    overflow-y: auto;
+  }
+  .lock-screen:not(.hidden) { display: flex; }
+  .lock-card {
+    width: 100%;
+    max-width: 420px;
+    padding: 36px 32px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    text-align: center;
+  }
+  .lock-logo { display: flex; justify-content: center; margin-bottom: 20px; }
+  .lock-title {
+    font-size: 26px;
+    font-weight: 600;
+    margin-bottom: 18px;
+    letter-spacing: -0.3px;
+  }
+  .lock-desc {
+    color: var(--text-dim);
+    font-size: 15px;
+    line-height: 1.5;
+    margin-bottom: 22px;
+    text-align: left;
+  }
+  .lock-hint {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    background: rgba(245, 158, 11, 0.06);
+    border: 1px solid rgba(245, 158, 11, 0.25);
+    color: #fcd34d;
+    padding: 12px 14px;
+    border-radius: 10px;
+    margin-bottom: 18px;
+    text-align: left;
+    font-size: 14px;
+  }
+  .lock-hint-label {
+    color: var(--orange);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    font-weight: 600;
+  }
+  .lock-input {
+    width: 100%;
+    padding: 13px 16px;
+    margin-bottom: 10px;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    color: var(--text);
+    font-size: 16px;
+    font-family: inherit;
+  }
+  .lock-input:focus { outline: none; border-color: var(--accent); }
+  .lock-error {
+    color: var(--red);
+    font-size: 14px;
+    text-align: left;
+    margin-bottom: 12px;
+    padding: 0 4px;
+  }
+  .lock-submit {
+    width: 100%;
+    padding: 14px 20px;
+    font-size: 16px;
+    margin-top: 6px;
+  }
+  .lock-help {
+    margin-top: 18px;
+    color: var(--text-dim);
+    font-size: 13px;
+  }
+  .lock-help a { color: var(--accent); text-decoration: none; }
+  .lock-help a:hover { text-decoration: underline; }
+
+  /* ============ Мобильная вёрстка ============ */
+  @media (max-width: 768px) {
+    body {
+      padding: 14px 14px 80px;
+      font-size: 17px;
+    }
+
+    /* Header: лого сверху, кнопки в сетке 2x2 снизу */
+    header {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 14px;
+      margin-bottom: 18px;
+      padding-bottom: 14px;
+    }
+    .brand { gap: 10px; }
+    .brand svg { width: 40px; height: 40px; }
+    h1 { font-size: 24px; }
+    .actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+    }
+    .actions .btn {
+      padding: 11px 8px;
+      font-size: 14px;
+    }
+    .actions .btn-icon {
+      padding: 10px 8px;
+      font-size: 16px;
+    }
+    .lock-card { padding: 28px 22px; }
+    .lock-title { font-size: 22px; }
+    .lock-desc { font-size: 14px; }
+
+    /* Backup reminder — текст сверху, кнопки снизу */
+    .backup-reminder {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 10px;
+      padding: 12px 14px;
+      font-size: 15px;
+    }
+    .backup-reminder-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+    }
+
+    /* Empty state */
+    .empty-state { padding: 50px 12px; }
+    .empty-state h2 { font-size: 26px; }
+    .empty-state p { font-size: 16px; }
+    .empty-state .cta-row { flex-direction: column; gap: 10px; }
+
+    /* Session report — плоско, без зелёной обёртки на мобильном */
+    .session-report {
+      flex-direction: column;
+      align-items: stretch;
+      padding: 0;
+      gap: 14px;
+      margin-bottom: 22px;
+      background: transparent;
+      border: none;
+    }
+    /* Тумблер СКС/МПП — pill в стиле iOS-сегментированного контрола */
+    .mode-switch {
+      align-self: flex-start;
+      padding: 4px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+    }
+    .mode-switch button {
+      padding: 11px 28px;
+      font-size: 15px;
+      letter-spacing: 0.6px;
+      color: var(--text-dim);
+      border-radius: 9px;
+    }
+    .mode-switch button.active {
+      background: #ffffff;
+      color: #0d0d0d;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+    }
+    .btn-report {
+      margin-left: 0;
+      padding: 16px 20px;
+      font-size: 16px;
+      width: 100%;
+    }
+
+    /* Today block: задача дня и темп — в столбик */
+    .today-block { grid-template-columns: 1fr; }
+    .today-task {
+      border-right: none;
+      border-bottom: 1px solid var(--border);
+      padding: 16px 18px;
+      gap: 12px;
+    }
+    .today-task-header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 4px;
+    }
+    .today-task-title { font-size: 18px; }
+    .today-task-body { gap: 16px; }
+    .today-task-value { font-size: 48px; letter-spacing: -1.5px; }
+    .today-task-text { font-size: 17px; }
+    .today-goal { padding: 16px 18px; }
+    .today-goal-count { font-size: 32px; }
+    .today-goal-count .of { font-size: 17px; }
+    .today-goal-pct { font-size: 17px; }
+
+    /* Dashboard: 2 колонки. Первая карточка (Прогресс) — на всю ширину. */
+    .dashboard {
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+    .dashboard > .card:first-child { grid-column: 1 / -1; }
+    .card {
+      min-height: auto;
+      padding: 16px 18px;
+    }
+    .card-label { font-size: 12px; }
+    .card-value { font-size: 34px; }
+    .card-sub { font-size: 13px; }
+
+    /* Hero (Прогресс всего): flex вместо grid, чтобы круг не наезжал на текст */
+    .hero {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .ring-wrap {
+      flex-shrink: 0;
+      width: 96px;
+      height: 96px;
+    }
+    /* SVG имеет width=130 height=130 в атрибутах — принудительно сжимаем */
+    .ring-wrap svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+    .ring-bg, .ring-fg { stroke-width: 10; }
+    .ring-pct { font-size: 22px; }
+    .ring-pct-sub { font-size: 10px; }
+    .hero-info {
+      flex: 1;
+      min-width: 0;
+    }
+    .hero-info .card-value { font-size: 28px; }
+    .hero-info .delta-row {
+      font-size: 13px;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    /* Secondary: календарь и неделя — в столбик */
+    .secondary {
+      grid-template-columns: 1fr;
+      gap: 10px;
+      margin-bottom: 22px;
+    }
+    .heatmap-card, .chart-card { padding: 14px 16px; }
+    .heatmap {
+      grid-template-columns: repeat(10, 1fr);
+      gap: 3px;
+    }
+    .legend .day { width: 18px; height: 18px; }
+
+    /* Zones: 2x2 */
+    .zones-card { padding: 14px 16px; margin-bottom: 22px; }
+    .zones {
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+    .zone { padding: 16px 16px; }
+    .zone .count { font-size: 32px; }
+    .zone .label { font-size: 12px; }
+
+    /* Section / список проблем */
+    .section { margin-bottom: 30px; }
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 12px;
+    }
+    .section-title { font-size: 22px; }
+    .section-meta { font-size: 13px; }
+
+    /* Карточка проблемы: 4 колонки вместо 5 (тренд скрыт) */
+    .problem {
+      grid-template-columns: 4px 30px 1fr 56px;
+      gap: 10px;
+      padding: 14px 14px 14px 0;
+    }
+    .priority { font-size: 11px; }
+    .problem-text { font-size: 17px; line-height: 1.4; }
+    .problem-progress { font-size: 11px; }
+    .problem-value { font-size: 22px; }
+    .problem-trend { display: none; }
+
+    /* Modals */
+    .modal-backdrop { padding: 12px; }
+    .modal {
+      padding: 18px 16px;
+      width: 100%;
+      max-width: 100%;
+      max-height: 92vh;
+    }
+    .modal-large { width: 100%; }
+    .modal h2 { font-size: 18px; }
+    .modal-hint { font-size: 12px; margin-bottom: 14px; }
+    .modal-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .modal-actions .btn {
+      flex: 1 1 auto;
+      padding: 10px 12px;
+      font-size: 14px;
+    }
+    .value-grid {
+      grid-template-columns: repeat(6, 1fr);
+    }
+  }
+
+  /* Очень узкие экраны (старые/маленькие андроиды) */
+  @media (max-width: 380px) {
+    body { padding: 10px 10px 70px; }
+    .actions .btn { font-size: 12px; padding: 9px 4px; }
+    h1 { font-size: 20px; }
+    .today-task-value { font-size: 38px; }
+    .card-value { font-size: 26px; }
+    .zone .count { font-size: 26px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Lock screen: ввод пароля -->
+<div class="lock-screen hidden" id="lock-screen">
+  <div class="lock-card">
+    <div class="lock-logo">
+      <svg width="56" height="56" viewBox="0 0 48 48" fill="none">
+        <rect x="4" y="4" width="40" height="40" rx="11" fill="url(#lockLogoMain)"/>
+        <text x="24" y="32" font-family="system-ui, sans-serif" font-size="22" font-weight="700"
+              text-anchor="middle" fill="#0d0d0d">ТП</text>
+        <defs>
+          <linearGradient id="lockLogoMain" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#10b981"/>
+            <stop offset="100%" stop-color="#6ee7b7"/>
+          </linearGradient>
+        </defs>
+      </svg>
+    </div>
+    <h2 class="lock-title">Введи пароль</h2>
+    <div class="lock-hint" id="lock-hint-block">
+      <span class="lock-hint-label">Подсказка:</span>
+      <span id="lock-hint-text"></span>
+    </div>
+    <form onsubmit="return submitUnlock(event)">
+      <input type="password" id="lock-password" class="lock-input"
+             placeholder="пароль" autocomplete="off" autofocus>
+      <div class="lock-error hidden" id="lock-error">Неверный пароль</div>
+      <button type="submit" class="btn btn-primary lock-submit">Войти</button>
+    </form>
+    <div class="lock-help">
+      Забыл пароль?
+      <a href="#" onclick="showRestoreFromBackup(); return false;">Восстановить из JSON-бэкапа</a>
+    </div>
+  </div>
+</div>
+
+<!-- Setup screen: создание пароля при первом запуске после обновления -->
+<div class="lock-screen hidden" id="setup-screen">
+  <div class="lock-card">
+    <div class="lock-logo">
+      <svg width="56" height="56" viewBox="0 0 48 48" fill="none">
+        <rect x="4" y="4" width="40" height="40" rx="11" fill="url(#setupLogoMain)"/>
+        <text x="24" y="32" font-family="system-ui, sans-serif" font-size="22" font-weight="700"
+              text-anchor="middle" fill="#0d0d0d">ТП</text>
+        <defs>
+          <linearGradient id="setupLogoMain" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#10b981"/>
+            <stop offset="100%" stop-color="#6ee7b7"/>
+          </linearGradient>
+        </defs>
+      </svg>
+    </div>
+    <h2 class="lock-title">Защити свои данные</h2>
+    <p class="lock-desc">
+      Придумай пароль. Все твои данные будут зашифрованы — без пароля их не прочесть.
+      Один раз введёшь на устройстве — потом не спросит, пока не нажмёшь «Заблокировать».
+      <br><br>
+      <b style="color: #fbbf24;">Важно:</b> запомни или запиши пароль. Если забудешь — данные нельзя будет восстановить (только из незашифрованного JSON-бэкапа).
+    </p>
+    <form onsubmit="return submitSetup(event)">
+      <input type="password" id="setup-password" class="lock-input"
+             placeholder="придумай пароль" autocomplete="new-password" autofocus required minlength="4">
+      <input type="password" id="setup-password2" class="lock-input"
+             placeholder="повтори тот же пароль" autocomplete="new-password" required>
+      <input type="text" id="setup-hint" class="lock-input"
+             placeholder="подсказка для себя (видна без пароля)" autocomplete="off">
+      <div class="lock-error hidden" id="setup-error"></div>
+      <button type="submit" class="btn btn-primary lock-submit">Создать и зашифровать</button>
+    </form>
+  </div>
+</div>
+
+<!-- Header -->
+<header>
+  <div class="brand">
+    <svg width="46" height="46" viewBox="0 0 48 48" fill="none" style="filter: drop-shadow(0 4px 14px rgba(16, 185, 129, 0.35));">
+      <rect x="4" y="4" width="40" height="40" rx="11" fill="url(#logoMain)"/>
+      <rect x="4" y="4" width="40" height="40" rx="11" fill="url(#logoGloss)"/>
+      <rect x="4" y="4" width="40" height="40" rx="11" fill="none" stroke="url(#logoStroke)" stroke-width="1"/>
+      <text x="24" y="32" font-family="system-ui, sans-serif" font-size="22" font-weight="700"
+            text-anchor="middle" fill="#0d0d0d" style="filter: drop-shadow(0 1px 0 rgba(255,255,255,0.2));">ТП</text>
+      <defs>
+        <linearGradient id="logoMain" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#10b981"/>
+          <stop offset="100%" stop-color="#6ee7b7"/>
+        </linearGradient>
+        <linearGradient id="logoGloss" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stop-color="#ffffff" stop-opacity="0.28"/>
+          <stop offset="45%" stop-color="#ffffff" stop-opacity="0"/>
+          <stop offset="100%" stop-color="#000000" stop-opacity="0.22"/>
+        </linearGradient>
+        <linearGradient id="logoStroke" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stop-color="#ffffff" stop-opacity="0.45"/>
+          <stop offset="100%" stop-color="#ffffff" stop-opacity="0.05"/>
+        </linearGradient>
+      </defs>
+    </svg>
+    <h1>Трекер проблем</h1>
+  </div>
+  <div class="actions">
+    <button class="btn" onclick="exportBackup()" title="Скачать файл с данными (JSON)">Бэкап</button>
+    <button class="btn" onclick="importBackup()" title="Восстановить из ранее сохранённого файла">Восстановить</button>
+    <button class="btn" onclick="openModal('modal-list')">+ Список</button>
+    <button class="btn btn-primary" onclick="openModal('modal-new')">+ Новая</button>
+    <button class="yadisk-btn" onclick="openYadiskModal()" title="Яндекс.Диск синхронизация" id="yadisk-btn">
+      <svg class="yadisk-icon" viewBox="0 0 32 32" width="32" height="32" fill="currentColor" aria-hidden="true">
+        <path d="M25.4 13.4C24.7 8.7 20.7 5 16 5c-3.7 0-6.9 2.1-8.5 5.2C3.5 10.5 0 14 0 18.3 0 22.6 3.4 26 7.7 26h17.5C29.1 26 32 23.1 32 19.4c0-3.5-2.6-6.4-6-6.9z"/>
+      </svg>
+    </button>
+    <button class="btn btn-icon" onclick="lockApp()" title="Заблокировать" id="lock-btn">🔒</button>
+  </div>
+</header>
+
+<!-- Backup reminder -->
+<div id="backup-reminder" class="backup-reminder hidden">
+  <div class="backup-reminder-text" id="backup-reminder-text">
+    <span class="backup-reminder-icon">●</span>
+    <span>Прошло <b id="backup-reminder-count">5</b> сессий без бэкапа. Сохрани копию, чтобы не потерять.</span>
+  </div>
+  <div class="backup-reminder-actions">
+    <button class="btn" onclick="snoozeBackupReminder()">Позже</button>
+    <button class="btn btn-warn" onclick="exportBackup()">Сохранить бэкап</button>
+  </div>
+</div>
+
+<!-- Empty state -->
+<div class="empty-state" id="empty-state">
+  <h2>Начинаем</h2>
+  <p>Добавь свои проблемы — по одной или списком сразу. Для каждой укажи метод (СКС или МПП), приоритет и начальное значение от −10 до 0.</p>
+  <div class="cta-row">
+    <button class="btn" onclick="openModal('modal-new')">+ Одну проблему</button>
+    <button class="btn btn-primary" onclick="openModal('modal-list')">+ Добавить списком</button>
+  </div>
+</div>
+
+<!-- Main container (показывается если есть проблемы) -->
+<div id="main" class="hidden">
+
+  <!-- Session report -->
+  <div class="session-report">
+    <div class="mode-switch">
+      <button class="active" id="mode-sks">СКС</button>
+      <button id="mode-mpp">МПП</button>
+    </div>
+    <div style="flex: 1;"></div>
+    <button class="btn-report" id="report-btn">Сессия СКС выполнена!</button>
+  </div>
+
+  <!-- Today -->
+  <div class="today-block">
+    <div class="today-task">
+      <div class="today-task-header">
+        <div class="today-task-title">Задача дня</div>
+        <div class="today-task-date" id="today-date"></div>
+      </div>
+      <div class="today-task-body">
+        <div class="today-task-text" id="today-text">—</div>
+        <div class="today-task-value" id="today-value">—</div>
+      </div>
+    </div>
+    <div class="today-goal">
+      <div class="today-goal-header">
+        <div class="card-label">Темп дня</div>
+        <a class="edit-link" onclick="editGoal()">настроить</a>
+      </div>
+      <div>
+        <div class="today-goal-row">
+          <div class="today-goal-count" id="goal-count">0<span class="of"> / 2</span></div>
+          <div class="today-goal-pct" id="goal-pct">0%</div>
+        </div>
+        <div class="bar"><div class="bar-fill" id="goal-bar" style="width: 0%;"></div></div>
+        <div class="card-sub" style="margin-top: 10px;">Перевыполнишь — станет 150%, 200%…</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Dashboard -->
+  <div class="dashboard">
+    <div class="card hero">
+      <div class="ring-wrap">
+        <svg width="130" height="130" viewBox="0 0 130 130">
+          <circle class="ring-bg" cx="65" cy="65" r="56"></circle>
+          <circle class="ring-fg" id="ring-fg" cx="65" cy="65" r="56"
+            stroke-dasharray="351.86" stroke-dashoffset="351.86"></circle>
+        </svg>
+        <div class="ring-label">
+          <div class="ring-pct" id="ring-pct">0%</div>
+          <div class="ring-pct-sub">отыграно</div>
+        </div>
+      </div>
+      <div class="hero-info">
+        <div class="card-label">Прогресс всего</div>
+        <div class="card-value" id="progress-value">+0<span style="font-size: 20px; color: var(--text-dim); font-weight: 400;"> из 0</span></div>
+        <div class="delta-row">
+          <span>Было: <b id="progress-initial">0</b></span>
+          <span>Стало: <b id="progress-current">0</b></span>
+          <span class="delta-green" id="progress-delta">+0</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div>
+        <div class="card-label">Решено</div>
+        <div class="card-value" style="margin-top: 12px;" id="solved-count">0<span style="font-size: 22px; color: var(--text-dim); font-weight: 400;"> / 0</span></div>
+        <div class="card-sub" id="solved-pct">0%</div>
+      </div>
+      <div class="bar"><div class="bar-fill" id="solved-bar" style="width: 0%;"></div></div>
+    </div>
+
+    <div class="card">
+      <div>
+        <div class="card-label">Серия дней</div>
+        <div class="card-value" style="margin-top: 12px; color: var(--orange);">
+          <svg class="streak-icon" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M13.5 0.67s0.74 2.65 0.74 4.8c0 2.06-1.35 3.73-3.41 3.73-2.07 0-3.63-1.67-3.63-3.73l0.03-0.36C5.21 7.51 4 10.62 4 14c0 4.42 3.58 8 8 8s8-3.58 8-8C20 8.61 17.41 3.8 13.5 0.67zM11.71 19c-1.78 0-3.22-1.4-3.22-3.14 0-1.62 1.05-2.76 2.81-3.12 1.77-0.36 3.6-1.21 4.62-2.58 0.39 1.29 0.59 2.65 0.59 4.04 0 2.65-2.15 4.8-4.8 4.8z"/>
+          </svg><span id="streak-count">0</span>
+        </div>
+        <div class="card-sub">дней подряд</div>
+      </div>
+      <div class="card-sub" style="margin: 0; color: var(--text-faint);">Лучшая: <span id="best-streak">0</span></div>
+    </div>
+
+    <div class="card">
+      <div>
+        <div class="card-label">Скорость</div>
+        <div class="card-value" style="margin-top: 12px;" id="speed-value">0<span style="font-size: 22px; color: var(--text-dim); font-weight: 400;"> /день</span></div>
+        <div class="card-sub">балла в среднем</div>
+      </div>
+      <div class="card-sub" style="margin: 0; padding-top: 14px; border-top: 1px solid var(--border);">До финиша: <b style="color: var(--text);" id="finish-days">—</b></div>
+    </div>
+  </div>
+
+  <!-- Heatmap + weekly -->
+  <div class="secondary">
+    <div class="heatmap-card">
+      <div class="card-label">Календарь сессий · 60 дней</div>
+      <div class="heatmap" id="heatmap"></div>
+      <div class="heatmap-footer">
+        <span id="heatmap-start"></span>
+        <div class="legend" id="legend"></div>
+        <span id="heatmap-end"></span>
+      </div>
+    </div>
+
+    <div class="chart-card">
+      <div class="card-label">За неделю</div>
+      <div class="card-value" style="margin-top: 10px; color: var(--green);" id="week-delta">+0</div>
+      <div class="card-sub" id="week-sub">баллов · 0 решены</div>
+      <div class="spark">
+        <svg viewBox="0 0 280 80" preserveAspectRatio="none" id="spark-svg"></svg>
+        <div class="spark-labels" id="spark-labels"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Zones -->
+  <div class="zones-card">
+    <div class="zones-title">Карта сражения</div>
+    <div class="zones">
+      <div class="zone red">
+        <div class="zone-bar"></div>
+        <div class="count" id="zone-red">0</div>
+        <div class="label">Красная · −10 … −7</div>
+      </div>
+      <div class="zone orange">
+        <div class="zone-bar"></div>
+        <div class="count" id="zone-orange">0</div>
+        <div class="label">Оранжевая · −6 … −4</div>
+      </div>
+      <div class="zone yellow">
+        <div class="zone-bar"></div>
+        <div class="count" id="zone-yellow">0</div>
+        <div class="label">Жёлтая · −3 … −1</div>
+      </div>
+      <div class="zone green">
+        <div class="zone-bar"></div>
+        <div class="count" id="zone-green">0</div>
+        <div class="label">Зелёная · решено</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- СКС -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-title">СКС</div>
+      <div class="section-meta" id="meta-sks"></div>
+    </div>
+    <div class="problem-list" id="list-sks"></div>
+    <button class="show-more hidden" id="btn-more-sks"></button>
+    <div class="resolved-section" id="won-sks-section">
+      <div class="resolved-toggle" onclick="this.nextElementSibling.classList.toggle('open')">
+        ▸ Победы (<span id="won-sks-count">0</span>)
+      </div>
+      <div class="resolved-list problem-list" id="list-sks-won"></div>
+    </div>
+  </div>
+
+  <!-- МПП -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-title">МПП</div>
+      <div class="section-meta" id="meta-mpp"></div>
+    </div>
+    <div class="problem-list" id="list-mpp"></div>
+    <button class="show-more hidden" id="btn-more-mpp"></button>
+    <div class="resolved-section" id="won-mpp-section">
+      <div class="resolved-toggle" onclick="this.nextElementSibling.classList.toggle('open')">
+        ▸ Победы (<span id="won-mpp-count">0</span>)
+      </div>
+      <div class="resolved-list problem-list" id="list-mpp-won"></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- MODAL: новая проблема -->
+<div class="modal-backdrop" id="modal-new" onclick="if(event.target===this) closeModal('modal-new')">
+  <div class="modal">
+    <h2>Новая проблема</h2>
+    <div class="modal-hint">Опиши проблему и укажи параметры.</div>
+    <form id="form-new" onsubmit="return submitNew(event)">
+      <div class="modal-row">
+        <label>Текст проблемы</label>
+        <input type="text" name="text" required autocomplete="off" placeholder="Например: Постоянно откладываю звонки клиентам">
+      </div>
+      <div class="modal-row">
+        <label>Метод</label>
+        <div class="radio-group">
+          <label><input type="radio" name="method" value="sks" checked> СКС</label>
+          <label><input type="radio" name="method" value="mpp"> МПП</label>
+        </div>
+      </div>
+      <div class="modal-row">
+        <label>Приоритет</label>
+        <div class="radio-group">
+          <label><input type="radio" name="priority" value="high"> Высокий</label>
+          <label><input type="radio" name="priority" value="med" checked> Средний</label>
+          <label><input type="radio" name="priority" value="low"> Низкий</label>
+        </div>
+      </div>
+      <div class="modal-row">
+        <label>Начальное значение (число от 0 до 10, минус проставится сам)</label>
+        <input type="text" name="value" id="new-value-input" inputmode="numeric" placeholder="например 9" autocomplete="off" required>
+        <div class="value-grid" id="new-value-grid" style="margin-top: 10px;"></div>
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="btn" onclick="closeModal('modal-new')">Отмена</button>
+        <button type="submit" class="btn btn-primary">Добавить</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- MODAL: список -->
+<div class="modal-backdrop" id="modal-list" onclick="if(event.target===this) closeModal('modal-list')">
+  <div class="modal modal-large">
+    <h2>Добавить списком</h2>
+    <div class="modal-hint">Каждая строка = одна проблема. Параметры ниже применяются ко всем строкам сразу — потом по каждой проблеме можно уточнить через клик.</div>
+    <div class="modal-row">
+      <label>Проблемы (одна на строку)</label>
+      <textarea id="bulk-text" placeholder="Постоянно откладываю звонки&#10;Не могу спать нормально&#10;Запустил ремонт в квартире"></textarea>
+    </div>
+    <div class="modal-row">
+      <label>Метод для всех</label>
+      <div class="radio-group">
+        <label><input type="radio" name="bulk-method" value="sks" checked> СКС</label>
+        <label><input type="radio" name="bulk-method" value="mpp"> МПП</label>
+      </div>
+    </div>
+    <div class="modal-row">
+      <label>Приоритет для всех</label>
+      <div class="radio-group">
+        <label><input type="radio" name="bulk-priority" value="high"> Высокий</label>
+        <label><input type="radio" name="bulk-priority" value="med" checked> Средний</label>
+        <label><input type="radio" name="bulk-priority" value="low"> Низкий</label>
+      </div>
+    </div>
+    <div class="modal-row">
+      <label>Начальное значение для всех (число от 0 до 10)</label>
+      <input type="text" id="bulk-value" inputmode="numeric" placeholder="например 9" autocomplete="off">
+      <div class="value-grid" id="bulk-value-grid" style="margin-top: 10px;"></div>
+    </div>
+    <div class="modal-actions">
+      <button type="button" class="btn" onclick="closeModal('modal-list')">Отмена</button>
+      <button type="button" class="btn btn-primary" onclick="submitBulk()">Добавить все</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: обновить значение -->
+<div class="modal-backdrop" id="modal-update" onclick="if(event.target===this) closeModal('modal-update')">
+  <div class="modal">
+    <div class="card-label" style="margin-bottom: 8px;">Новое значение</div>
+    <div class="modal-problem-text" id="update-text"></div>
+    <div class="modal-history" id="update-history"></div>
+    <div class="modal-row" style="margin-bottom: 10px;">
+      <input type="number" id="update-input" min="-10" max="10" step="1"
+             placeholder="введи число и Enter (10 = −10, 0 = решено)"
+             style="font-size: 16px;">
+    </div>
+    <div style="font-size: 12px; color: var(--text-faint); margin: 6px 0 12px; text-align: center;">или кликни по кнопке</div>
+    <div class="value-grid" id="value-grid"></div>
+    <div class="modal-actions">
+      <button type="button" class="btn btn-danger" onclick="confirmDelete()">Удалить</button>
+      <button type="button" class="btn" onclick="renameProblem()">Изменить текст</button>
+      <button type="button" class="btn" onclick="closeModal('modal-update')">Закрыть</button>
+    </div>
+  </div>
+</div>
+
+<!-- Cloud password modal: для расшифровки данных с Я.Диска когда соли разные -->
+<div class="modal-backdrop" id="cloud-pwd-modal" onclick="if(event.target===this) closeCloudPwdModal()">
+  <div class="modal">
+    <h2>Расшифровать облако</h2>
+    <p class="modal-hint">
+      На Яндекс.Диске данные зашифрованы другим ключом, чем на этом устройстве.
+      Введи пароль (тот же что ты использовал на ПК) — облако расшифруется и подтянутся актуальные данные.
+    </p>
+    <form onsubmit="return submitCloudPwd(event)">
+      <input type="password" id="cloud-pwd-input" class="lock-input"
+             placeholder="пароль с ПК" autocomplete="off">
+      <div class="lock-error hidden" id="cloud-pwd-error"></div>
+      <div class="modal-actions">
+        <button type="button" class="btn" onclick="closeCloudPwdModal()">Отмена</button>
+        <button type="submit" class="btn btn-primary">Расшифровать</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Yandex Disk connect modal -->
+<div class="modal-backdrop" id="yadisk-modal" onclick="if(event.target===this) closeYadiskModal()">
+  <div class="modal">
+    <h2>Подключить Яндекс.Диск</h2>
+    <p class="modal-hint">
+      Шаг 1. Открыта новая вкладка с Яндексом — авторизуйся и разреши доступ.<br>
+      Шаг 2. Яндекс покажет страницу с длинным токеном — скопируй её адресную строку или сам токен.<br>
+      Шаг 3. Вставь сюда:
+    </p>
+    <form onsubmit="return submitYadiskToken(event)">
+      <input type="text" id="yadisk-token-input" class="lock-input"
+             placeholder="токен или URL после авторизации" autocomplete="off">
+      <div class="lock-error hidden" id="yadisk-error"></div>
+      <div class="modal-actions">
+        <button type="button" class="btn" onclick="closeYadiskModal()">Отмена</button>
+        <button type="submit" class="btn btn-primary">Подключить</button>
+      </div>
+    </form>
+    <p style="margin-top: 14px; font-size: 12px; color: var(--text-faint); line-height: 1.5;">
+      После подключения все твои сохранения будут уезжать в зашифрованном виде в папку
+      «Приложения/Трекер проблем» на твоём Яндекс.Диске. Открыл сайт с другого устройства —
+      данные подтянутся оттуда.
+    </p>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ============ STATE ============
+const STATE_KEY = 'tracker_state_v1';                // legacy незашифрованный
+const ENCRYPTED_KEY = 'tracker_encrypted_v1';        // {salt, iv, ciphertext}
+const HINT_KEY = 'tracker_password_hint';            // подсказка пароля (открытым текстом)
+const KEY_CACHE_KEY = 'tracker_session_key_v1';      // {rawKey, salt} — кэш ключа дешифрования
+// Фиксированная соль для PBKDF2 — одинаковая на всех устройствах,
+// чтобы один пароль давал один и тот же ключ. Соль публичная, защита держится на пароле.
+const FIXED_SALT_B64 = 'NLReYlOFdbztrcXvSA1LUQ==';
+
+function initialState() {
+  return {
+    problems: [],
+    sessions: [],
+    updates: [],
+    settings: { dailyGoal: 2, lastPriority: 'med', lastMethod: 'sks', lastValue: null, sessionsSinceBackup: 0, backupReminderEvery: 5, backupReminderSnoozedUntil: 0, firstReminderShown: false },
+    currentMethod: 'sks',
+  };
+}
+
+let state = null;  // заполняется после успешного unlock/setup
+let updatingProblemId = null;
+
+function mergeWithInitial(parsed) {
+  const init = initialState();
+  return {
+    ...init,
+    ...parsed,
+    settings: { ...init.settings, ...((parsed && parsed.settings) || {}) },
+  };
+}
+
+// ============ CRYPTO ============
+function bufToB64(buf) {
+  let str = '';
+  const bytes = new Uint8Array(buf);
+  for (let i = 0; i < bytes.byteLength; i++) str += String.fromCharCode(bytes[i]);
+  return btoa(str);
+}
+function b64ToBuf(b64) {
+  const str = atob(b64);
+  const buf = new Uint8Array(str.length);
+  for (let i = 0; i < str.length; i++) buf[i] = str.charCodeAt(i);
+  return buf;
+}
+
+async function deriveKey(password, salt) {
+  const enc = new TextEncoder();
+  const baseKey = await crypto.subtle.importKey(
+    'raw', enc.encode(password), { name: 'PBKDF2' }, false, ['deriveKey']
+  );
+  return crypto.subtle.deriveKey(
+    { name: 'PBKDF2', salt, iterations: 200000, hash: 'SHA-256' },
+    baseKey,
+    { name: 'AES-GCM', length: 256 },
+    true,
+    ['encrypt', 'decrypt']
+  );
+}
+
+async function encryptStateWithPassword(stateObj, password) {
+  const salt = b64ToBuf(FIXED_SALT_B64);
+  const iv = crypto.getRandomValues(new Uint8Array(12));
+  const key = await deriveKey(password, salt);
+  const enc = new TextEncoder();
+  const data = enc.encode(JSON.stringify(stateObj));
+  const ciphertext = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, key, data);
+  // Кэшируем raw key для повторного использования без пароля
+  const rawKey = await crypto.subtle.exportKey('raw', key);
+  localStorage.setItem(KEY_CACHE_KEY, JSON.stringify({
+    rawKey: bufToB64(rawKey),
+    salt: FIXED_SALT_B64,
+  }));
+  return {
+    salt: FIXED_SALT_B64,
+    iv: bufToB64(iv),
+    ciphertext: bufToB64(ciphertext),
+  };
+}
+
+async function decryptWithPassword(packed, password) {
+  const salt = b64ToBuf(packed.salt);
+  const iv = b64ToBuf(packed.iv);
+  const ciphertext = b64ToBuf(packed.ciphertext);
+  const key = await deriveKey(password, salt);
+  const plain = await crypto.subtle.decrypt({ name: 'AES-GCM', iv }, key, ciphertext);
+  // Кэшируем для последующих чтений/записей
+  const rawKey = await crypto.subtle.exportKey('raw', key);
+  localStorage.setItem(KEY_CACHE_KEY, JSON.stringify({
+    rawKey: bufToB64(rawKey),
+    salt: packed.salt,
+  }));
+  const dec = new TextDecoder();
+  return JSON.parse(dec.decode(plain));
+}
+
+async function decryptWithCachedKey(packed) {
+  const cached = localStorage.getItem(KEY_CACHE_KEY);
+  if (!cached) return null;
+  try {
+    const { rawKey } = JSON.parse(cached);
+    const keyBytes = b64ToBuf(rawKey);
+    const key = await crypto.subtle.importKey(
+      'raw', keyBytes, { name: 'AES-GCM' }, true, ['encrypt', 'decrypt']
+    );
+    const iv = b64ToBuf(packed.iv);
+    const ciphertext = b64ToBuf(packed.ciphertext);
+    const plain = await crypto.subtle.decrypt({ name: 'AES-GCM', iv }, key, ciphertext);
+    const dec = new TextDecoder();
+    return JSON.parse(dec.decode(plain));
+  } catch {
+    return null;
+  }
+}
+
+async function encryptWithCachedKey(stateObj) {
+  const cached = localStorage.getItem(KEY_CACHE_KEY);
+  if (!cached) return null;
+  try {
+    const { rawKey, salt } = JSON.parse(cached);
+    const keyBytes = b64ToBuf(rawKey);
+    const key = await crypto.subtle.importKey(
+      'raw', keyBytes, { name: 'AES-GCM' }, true, ['encrypt', 'decrypt']
+    );
+    const iv = crypto.getRandomValues(new Uint8Array(12));
+    const enc = new TextEncoder();
+    const data = enc.encode(JSON.stringify(stateObj));
+    const ciphertext = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, key, data);
+    return {
+      salt: salt,
+      iv: bufToB64(iv),
+      ciphertext: bufToB64(ciphertext),
+    };
+  } catch {
+    return null;
+  }
+}
+
+// Сохранение state — асинхронное, с очередью чтобы не дублировать запись
+let _pendingState = null;
+let _savingInFlight = false;
+
+function saveState() {
+  if (!state) return;
+  _pendingState = state;
+  if (!_savingInFlight) flushSaveState();
+}
+
+async function flushSaveState() {
+  while (_pendingState) {
+    const toSave = _pendingState;
+    _pendingState = null;
+    _savingInFlight = true;
+    try {
+      const packed = await encryptWithCachedKey(toSave);
+      if (packed) {
+        const envelope = { ...packed, updatedAt: new Date().toISOString(), version: 1 };
+        localStorage.setItem(ENCRYPTED_KEY, JSON.stringify(envelope));
+        // ЗАЩИТА: на Диск пушим только если есть что пушить (не пустой state).
+        // Это предотвращает затирание данных другого устройства при первом локальном setup'е.
+        const hasProblems = toSave.problems && toSave.problems.length > 0;
+        if (localStorage.getItem(YADISK_TOKEN_KEY) && hasProblems) {
+          syncToCloud(envelope).catch(err => console.warn('Cloud sync failed:', err));
+        }
+      }
+    } catch (err) {
+      console.error('saveState failed', err);
+    }
+    _savingInFlight = false;
+  }
+}
+
+// ============ ЯНДЕКС.ДИСК СИНХРОНИЗАЦИЯ ============
+const YADISK_TOKEN_KEY = 'tracker_yadisk_token';
+const YADISK_PATH = 'app:/tracker_data.enc';
+const YADISK_API = 'https://cloud-api.yandex.net/v1/disk';
+
+let _syncInFlight = false;
+let _syncPending = null;
+let _lastSyncError = null;
+
+async function yadiskGetMeta() {
+  const token = localStorage.getItem(YADISK_TOKEN_KEY);
+  if (!token) return null;
+  const url = `${YADISK_API}/resources?path=${encodeURIComponent(YADISK_PATH)}&fields=modified,size`;
+  const resp = await fetch(url, { headers: { Authorization: `OAuth ${token}` } });
+  if (resp.status === 404) return { exists: false };
+  if (!resp.ok) throw new Error('Yandex Disk meta error: ' + resp.status);
+  const data = await resp.json();
+  return { exists: true, modified: data.modified, size: data.size };
+}
+
+async function yadiskDownload() {
+  const token = localStorage.getItem(YADISK_TOKEN_KEY);
+  if (!token) return null;
+  const r1 = await fetch(`${YADISK_API}/resources/download?path=${encodeURIComponent(YADISK_PATH)}`, {
+    headers: { Authorization: `OAuth ${token}` },
+  });
+  if (r1.status === 404) return null;
+  if (!r1.ok) throw new Error('Yandex Disk download URL error: ' + r1.status);
+  const { href } = await r1.json();
+  const r2 = await fetch(href);
+  if (!r2.ok) throw new Error('Yandex Disk file fetch error: ' + r2.status);
+  const text = await r2.text();
+  try { return JSON.parse(text); }
+  catch { throw new Error('Файл на Диске повреждён или не JSON'); }
+}
+
+async function yadiskUpload(envelope) {
+  const token = localStorage.getItem(YADISK_TOKEN_KEY);
+  if (!token) return false;
+  const text = JSON.stringify(envelope);
+  const r1 = await fetch(`${YADISK_API}/resources/upload?path=${encodeURIComponent(YADISK_PATH)}&overwrite=true`, {
+    headers: { Authorization: `OAuth ${token}` },
+  });
+  if (!r1.ok) throw new Error('Yandex Disk upload URL error: ' + r1.status);
+  const { href, method } = await r1.json();
+  const r2 = await fetch(href, {
+    method: method || 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: text,
+  });
+  if (!r2.ok) throw new Error('Yandex Disk PUT error: ' + r2.status);
+  return true;
+}
+
+// Если cached key не подходит для расшифровки облака (на устройствах разные соли),
+// просим у пользователя пароль через DOM-модалку и используем соль из облака.
+// Возвращаем Promise который резолвится результатом расшифровки.
+let _cloudPwdResolver = null;
+let _cloudPwdRemote = null;
+
+function tryDecryptRemoteWithPrompt(remote) {
+  return new Promise((resolve) => {
+    _cloudPwdResolver = resolve;
+    _cloudPwdRemote = remote;
+    const modal = document.getElementById('cloud-pwd-modal');
+    if (!modal) {
+      resolve(null);
+      return;
+    }
+    modal.classList.add('open');
+    document.getElementById('cloud-pwd-error').classList.add('hidden');
+    setTimeout(() => {
+      const inp = document.getElementById('cloud-pwd-input');
+      if (inp) inp.focus();
+    }, 100);
+  });
+}
+
+function closeCloudPwdModal() {
+  document.getElementById('cloud-pwd-modal').classList.remove('open');
+  document.getElementById('cloud-pwd-input').value = '';
+  document.getElementById('cloud-pwd-error').classList.add('hidden');
+  if (_cloudPwdResolver) {
+    _cloudPwdResolver(null);
+    _cloudPwdResolver = null;
+    _cloudPwdRemote = null;
+  }
+}
+
+async function submitCloudPwd(e) {
+  e.preventDefault();
+  const pwd = document.getElementById('cloud-pwd-input').value;
+  const errorEl = document.getElementById('cloud-pwd-error');
+  errorEl.classList.add('hidden');
+  if (!pwd) {
+    errorEl.textContent = 'Введи пароль';
+    errorEl.classList.remove('hidden');
+    return false;
+  }
+  if (!_cloudPwdRemote) {
+    errorEl.textContent = 'Контекст потерян. Закрой и попробуй ещё раз.';
+    errorEl.classList.remove('hidden');
+    return false;
+  }
+  try {
+    const remote = _cloudPwdRemote;
+    const salt = b64ToBuf(remote.salt);
+    const iv = b64ToBuf(remote.iv);
+    const ciphertext = b64ToBuf(remote.ciphertext);
+    const key = await deriveKey(pwd, salt);
+    const plain = await crypto.subtle.decrypt({ name: 'AES-GCM', iv }, key, ciphertext);
+    const decrypted = JSON.parse(new TextDecoder().decode(plain));
+    const rawKey = await crypto.subtle.exportKey('raw', key);
+    localStorage.setItem(KEY_CACHE_KEY, JSON.stringify({
+      rawKey: bufToB64(rawKey),
+      salt: remote.salt,
+    }));
+    document.getElementById('cloud-pwd-modal').classList.remove('open');
+    document.getElementById('cloud-pwd-input').value = '';
+    if (_cloudPwdResolver) {
+      _cloudPwdResolver(decrypted);
+      _cloudPwdResolver = null;
+      _cloudPwdRemote = null;
+    }
+  } catch (err) {
+    errorEl.textContent = 'Неверный пароль (или файл повреждён)';
+    errorEl.classList.remove('hidden');
+    document.getElementById('cloud-pwd-input').select();
+  }
+  return false;
+}
+
+async function syncToCloud(envelope) {
+  if (!localStorage.getItem(YADISK_TOKEN_KEY)) return;
+  _syncPending = envelope;
+  if (_syncInFlight) return;
+  _syncInFlight = true;
+  updateSyncStatus('syncing');
+  while (_syncPending) {
+    const toUpload = _syncPending;
+    _syncPending = null;
+    try {
+      await yadiskUpload(toUpload);
+      _lastSyncError = null;
+      updateSyncStatus('synced');
+    } catch (err) {
+      _lastSyncError = 'Не удалось залить на Я.Диск: ' + (err.message || err);
+      updateSyncStatus('error');
+      console.warn('syncToCloud failed:', err);
+      break;
+    }
+  }
+  _syncInFlight = false;
+}
+
+async function syncFromCloud() {
+  const token = localStorage.getItem(YADISK_TOKEN_KEY);
+  if (!token) {
+    updateSyncStatus('unconnected');
+    return;
+  }
+  updateSyncStatus('syncing');
+  try {
+    const remote = await yadiskDownload();
+    const localRaw = localStorage.getItem(ENCRYPTED_KEY);
+    const local = localRaw ? JSON.parse(localRaw) : null;
+    const localProblems = (state && state.problems && state.problems.length) || 0;
+
+    if (!remote) {
+      // На Диске нет файла — пушим локальный
+      if (local) {
+        await yadiskUpload(local);
+      }
+      _lastSyncError = null;
+      updateSyncStatus('synced');
+      return;
+    }
+
+    // ЗАЩИТА: если локально пусто, не дать перезаписать Диск пустотой.
+    // Всегда пытаемся ТЯНУТЬ с Диска когда локально нет проблем — независимо от updatedAt.
+    if (localProblems === 0) {
+      const decrypted = await decryptWithCachedKey(remote);
+      if (decrypted) {
+        state = mergeWithInitial(decrypted);
+        localStorage.setItem(ENCRYPTED_KEY, JSON.stringify(remote));
+        renderAll();
+        _lastSyncError = null;
+        updateSyncStatus('synced');
+        const cnt = (state.problems && state.problems.length) || 0;
+        if (cnt > 0) toast('С Я.Диска подтянуто проблем: ' + cnt);
+        return;
+      }
+      _lastSyncError = 'На Я.Диске данные шифрованы другим паролем. Введи на ПК тот же пароль и нажми «Заблокировать → разблокировать» чтобы обновить шифрование.';
+      updateSyncStatus('error');
+      toast('Пароль на устройствах должен совпадать');
+      return;
+    }
+
+    const remoteAt = remote.updatedAt || '';
+    const localAt = local && local.updatedAt || '';
+
+    if (remoteAt && remoteAt > localAt) {
+      // Облако свежее — пробуем расшифровать кэшированным ключом
+      const decrypted = await decryptWithCachedKey(remote);
+      if (decrypted) {
+        const remoteProblems = (decrypted.problems && decrypted.problems.length) || 0;
+        // ВТОРАЯ ЗАЩИТА: если remote пустой а local имеет проблемы — пушим local
+        if (remoteProblems === 0 && localProblems > 0) {
+          await yadiskUpload(local);
+          _lastSyncError = null;
+          updateSyncStatus('synced');
+          toast('Облако было пустым — обновили из локального');
+          return;
+        }
+        state = mergeWithInitial(decrypted);
+        localStorage.setItem(ENCRYPTED_KEY, JSON.stringify(remote));
+        renderAll();
+        _lastSyncError = null;
+        updateSyncStatus('synced');
+        toast('Синхронизировано с Я.Диском');
+        return;
+      }
+      _lastSyncError = 'На Я.Диске данные шифрованы другим паролем — не смог расшифровать';
+      updateSyncStatus('error');
+      toast('Облако шифровано другим паролем');
+      return;
+    }
+
+    if (localAt && localAt > remoteAt) {
+      // Локально свежее — пушим, НО только если локально что-то есть
+      // (защита от затирания свежего облака пустотой свежего setup'а)
+      if (localProblems > 0) {
+        await yadiskUpload(local);
+      }
+    }
+    _lastSyncError = null;
+    updateSyncStatus('synced');
+  } catch (err) {
+    _lastSyncError = 'Не удалось скачать с Я.Диска: ' + (err.message || err);
+    updateSyncStatus('error');
+    console.warn('syncFromCloud failed:', err);
+  }
+}
+
+function updateSyncStatus(status) {
+  const btn = document.getElementById('yadisk-btn');
+  if (!btn) return;
+  btn.classList.remove('syncing', 'synced', 'error', 'unconnected');
+  btn.classList.add(status);
+  const titles = {
+    unconnected: 'Я.Диск не подключён — нажми чтобы подключить',
+    syncing: 'Синхронизация…',
+    synced: 'Синхронизировано с Я.Диском',
+    error: 'Ошибка синхронизации — нажми для отключения/переподключения',
+  };
+  btn.title = titles[status] || 'Я.Диск';
+}
+
+// ============ UI: подключение/отключение Я.Диска ============
+function openYadiskModal() {
+  const token = localStorage.getItem(YADISK_TOKEN_KEY);
+  if (!token) {
+    // Не подключено — открываем модалку подключения
+    window.open(
+      'https://oauth.yandex.ru/authorize?response_type=token&client_id=3068cea51ff340dbaf608f48de9fe73e',
+      '_blank',
+      'noopener'
+    );
+    document.getElementById('yadisk-modal').classList.add('open');
+    setTimeout(() => {
+      const inp = document.getElementById('yadisk-token-input');
+      if (inp) inp.focus();
+    }, 100);
+    return;
+  }
+
+  // Подключено — диалог в зависимости от статуса
+  if (_lastSyncError) {
+    const choice = prompt(
+      'ОШИБКА синхронизации с Я.Диском:\n' +
+      _lastSyncError + '\n\n' +
+      'Что делать?\n' +
+      '1 — попробовать синхронизировать ещё раз\n' +
+      '2 — переподключить токен (получить новый)\n' +
+      '3 — отключить Я.Диск\n' +
+      'Введи 1, 2 или 3:',
+      '1'
+    );
+    if (choice === '1') {
+      syncFromCloud();
+    } else if (choice === '2') {
+      localStorage.removeItem(YADISK_TOKEN_KEY);
+      _lastSyncError = null;
+      updateSyncStatus('unconnected');
+      openYadiskModal();
+    } else if (choice === '3') {
+      localStorage.removeItem(YADISK_TOKEN_KEY);
+      _lastSyncError = null;
+      updateSyncStatus('unconnected');
+      toast('Я.Диск отключён');
+    }
+    return;
+  }
+
+  // Подключено и без ошибок — предлагаем синк сейчас или отключить
+  const choice = prompt(
+    'Я.Диск подключён ✓\n\n' +
+    'Что сделать?\n' +
+    '1 — синхронизировать сейчас\n' +
+    '2 — отключить Я.Диск\n' +
+    'Введи 1 или 2:',
+    '1'
+  );
+  if (choice === '1') {
+    syncFromCloud();
+  } else if (choice === '2') {
+    localStorage.removeItem(YADISK_TOKEN_KEY);
+    updateSyncStatus('unconnected');
+    toast('Я.Диск отключён');
+  }
+}
+
+function closeYadiskModal() {
+  document.getElementById('yadisk-modal').classList.remove('open');
+  document.getElementById('yadisk-token-input').value = '';
+  document.getElementById('yadisk-error').classList.add('hidden');
+}
+
+async function submitYadiskToken(e) {
+  e.preventDefault();
+  const raw = document.getElementById('yadisk-token-input').value.trim();
+  const errorEl = document.getElementById('yadisk-error');
+  errorEl.classList.add('hidden');
+  if (!raw) {
+    errorEl.textContent = 'Вставь токен или URL';
+    errorEl.classList.remove('hidden');
+    return false;
+  }
+  // Поддерживаем 3 формата: чистый токен / URL с #access_token=... / просто строка содержащая access_token=
+  let token = raw;
+  const m = raw.match(/access_token=([A-Za-z0-9_\-]+)/);
+  if (m) {
+    token = m[1];
+  } else if (/^[A-Za-z0-9_\-]{20,}$/.test(raw)) {
+    token = raw;
+  }
+  // Проверяем токен запросом к API
+  try {
+    const r = await fetch(`${YADISK_API}/resources?path=app:/`, {
+      headers: { Authorization: `OAuth ${token}` },
+    });
+    if (r.status === 401) throw new Error('Токен невалидный (401). Получи новый.');
+    if (!r.ok) throw new Error('Яндекс ответил ' + r.status);
+    localStorage.setItem(YADISK_TOKEN_KEY, token);
+    closeYadiskModal();
+    toast('Я.Диск подключён ✓');
+    updateSyncStatus('synced');
+    // Сразу пробуем синк
+    await syncFromCloud();
+  } catch (err) {
+    errorEl.textContent = err.message;
+    errorEl.classList.remove('hidden');
+  }
+  return false;
+}
+
+// ============ HELPERS ============
+function today() { return new Date().toISOString().slice(0, 10); }
+function genId() { return Math.random().toString(36).slice(2, 10) + Date.now().toString(36); }
+function clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
+
+function toast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(window._toastT);
+  window._toastT = setTimeout(() => el.classList.remove('show'), 2200);
+}
+
+function zoneOf(v) {
+  if (v === 0) return 'green';
+  if (v >= -3) return 'yellow';
+  if (v >= -6) return 'orange';
+  return 'red';
+}
+function priorityLabel(p) { return { high: 'ВЫС', med: 'СРД', low: 'НИЗ' }[p]; }
+function methodLabel(m) { return m === 'sks' ? 'СКС' : 'МПП'; }
+function progressPct(initial, current) {
+  if (initial === 0) return 100;
+  return Math.round(((initial - current) / initial) * 100);
+}
+function formatDate(iso) {
+  const d = new Date(iso + 'T00:00:00');
+  const months = ['янв','фев','мар','апр','май','июн','июл','авг','сен','окт','ноя','дек'];
+  return d.getDate() + ' ' + months[d.getMonth()];
+}
+
+// ============ CRUD ============
+function normalizeInputValue(raw) {
+  // 9 → −9, 0 → 0, 10 → −10, -5 → −5; любое за пределами → clamp
+  const num = parseInt(raw, 10);
+  if (isNaN(num)) return null;
+  return -Math.max(0, Math.min(10, Math.abs(num)));
+}
+
+function addProblem(data) {
+  const v = normalizeInputValue(data.value);
+  if (v === null) return null;
+  const problem = {
+    id: genId(),
+    text: data.text.trim(),
+    method: data.method,
+    priority: data.priority,
+    initial: v,
+    current: v,
+    history: [{ date: today(), value: v }],
+    createdAt: new Date().toISOString(),
+    resolvedAt: v === 0 ? today() : null,
+  };
+  state.problems.push(problem);
+  saveState();
+  renderAll();
+  return problem;
+}
+
+function updateProblemValue(id, newValue) {
+  const p = state.problems.find(x => x.id === id);
+  if (!p) return;
+  const v = clamp(parseInt(newValue, 10), -10, 0);
+  if (v === p.current) return;
+  const delta = v - p.current;
+  p.current = v;
+  p.history.push({ date: today(), value: v });
+  state.updates.push({ date: today(), problemId: id, delta });
+  if (v === 0 && !p.resolvedAt) p.resolvedAt = today();
+  if (v !== 0 && p.resolvedAt) p.resolvedAt = null;
+  saveState();
+  renderAll();
+}
+
+function deleteProblem(id) {
+  state.problems = state.problems.filter(x => x.id !== id);
+  state.updates = state.updates.filter(u => u.problemId !== id);
+  saveState();
+  renderAll();
+}
+
+function recordSession(method) {
+  state.sessions.push({ date: today(), method });
+  state.settings.sessionsSinceBackup = (state.settings.sessionsSinceBackup || 0) + 1;
+  saveState();
+  renderAll();
+  toast('Сессия ' + methodLabel(method) + ' записана!');
+  maybeShowBackupReminder();
+}
+
+function setDailyGoal(n) {
+  state.settings.dailyGoal = Math.max(1, parseInt(n, 10) || 1);
+  saveState();
+  renderAll();
+}
+
+// ============ MODALS ============
+function openModal(id) {
+  document.getElementById(id).classList.add('open');
+  if (id === 'modal-new') {
+    const lastMethod = state.settings.lastMethod || 'sks';
+    const lastValue = state.settings.lastValue;
+
+    const methodRadio = document.querySelector(`#form-new input[name="method"][value="${lastMethod}"]`);
+    if (methodRadio) methodRadio.checked = true;
+
+    const input = document.getElementById('new-value-input');
+    input.value = (lastValue !== null && lastValue !== undefined) ? String(Math.abs(lastValue)) : '';
+    renderValueGrid('new-value-grid', input, 'priority');
+
+    // автоприоритет по значению
+    if (lastValue !== null && lastValue !== undefined) {
+      applyAutoPriority('priority', Math.abs(lastValue));
+    }
+
+    setTimeout(() => document.querySelector('#form-new input[name="text"]').focus(), 50);
+  }
+  if (id === 'modal-list') {
+    const lastValue = state.settings.lastValue;
+    const input = document.getElementById('bulk-value');
+    input.value = (lastValue !== null && lastValue !== undefined) ? String(Math.abs(lastValue)) : '';
+    renderValueGrid('bulk-value-grid', input, 'bulk-priority');
+
+    if (lastValue !== null && lastValue !== undefined) {
+      applyAutoPriority('bulk-priority', Math.abs(lastValue));
+    }
+
+    setTimeout(() => document.getElementById('bulk-text').focus(), 50);
+  }
+}
+
+function priorityByAbs(abs) {
+  if (abs >= 7) return 'high';
+  if (abs >= 4) return 'med';
+  return 'low';
+}
+function applyAutoPriority(radioName, abs) {
+  const prio = priorityByAbs(abs);
+  const radio = document.querySelector(`input[name="${radioName}"][value="${prio}"]`);
+  if (radio) radio.checked = true;
+}
+
+function renderValueGrid(gridId, inputEl, radioName) {
+  const grid = document.getElementById(gridId);
+  const rawValue = inputEl.value.trim();
+  const parsed = parseInt(rawValue, 10);
+  const currentAbs = !isNaN(parsed) ? Math.max(0, Math.min(10, Math.abs(parsed))) : null;
+
+  grid.innerHTML = '';
+  for (let v = -10; v <= 0; v++) {
+    const abs = Math.abs(v);
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'val-btn' +
+      (currentAbs !== null && abs === currentAbs ? ' current' : '') +
+      (v === 0 ? ' zero' : '');
+    btn.textContent = v === 0 ? '0' : '−' + abs;
+    btn.onclick = () => {
+      inputEl.value = String(abs);
+      grid.querySelectorAll('.val-btn').forEach(b => b.classList.remove('current'));
+      btn.classList.add('current');
+      if (radioName) applyAutoPriority(radioName, abs);
+    };
+    grid.appendChild(btn);
+  }
+  // Синхронизация: при ручном вводе обновляем подсветку + приоритет
+  if (!inputEl._gridSyncBound) {
+    inputEl.addEventListener('input', () => {
+      const p = parseInt(inputEl.value.trim(), 10);
+      const a = !isNaN(p) ? Math.max(0, Math.min(10, Math.abs(p))) : null;
+      grid.querySelectorAll('.val-btn').forEach(b => {
+        const bAbs = b.textContent === '0' ? 0 : parseInt(b.textContent.replace('−', ''), 10);
+        b.classList.toggle('current', a !== null && bAbs === a);
+      });
+      if (a !== null && radioName) applyAutoPriority(radioName, a);
+    });
+    inputEl._gridSyncBound = true;
+  }
+}
+function closeModal(id) {
+  document.getElementById(id).classList.remove('open');
+  if (id === 'modal-new') document.getElementById('form-new').reset();
+  if (id === 'modal-list') document.getElementById('bulk-text').value = '';
+  if (id === 'modal-update') updatingProblemId = null;
+}
+
+function submitNew(e) {
+  e.preventDefault();
+  const form = e.target;
+  const rawValue = form.value.value.trim();
+  if (rawValue === '') { toast('Введи начальное значение'); return false; }
+  const v = normalizeInputValue(rawValue);
+  if (v === null) { toast('Значение должно быть числом'); return false; }
+  addProblem({
+    text: form.text.value,
+    method: form.method.value,
+    priority: form.priority.value,
+    value: v,
+  });
+  state.settings.lastPriority = form.priority.value;
+  state.settings.lastMethod = form.method.value;
+  state.settings.lastValue = v;
+  saveState();
+  closeModal('modal-new');
+  toast('Проблема добавлена');
+  return false;
+}
+
+function submitBulk() {
+  const text = document.getElementById('bulk-text').value.trim();
+  if (!text) return;
+  const lines = text.split('\n').map(l => l.trim()).filter(l => l);
+  const method = document.querySelector('input[name="bulk-method"]:checked').value;
+  const priority = document.querySelector('input[name="bulk-priority"]:checked').value;
+  const rawValue = document.getElementById('bulk-value').value.trim();
+  if (rawValue === '') { toast('Введи начальное значение для всех'); return; }
+  const v = normalizeInputValue(rawValue);
+  if (v === null) { toast('Значение должно быть числом'); return; }
+  lines.forEach(line => addProblem({ text: line, method, priority, value: v }));
+  state.settings.lastPriority = priority;
+  state.settings.lastMethod = method;
+  state.settings.lastValue = v;
+  saveState();
+  closeModal('modal-list');
+  toast('Добавлено проблем: ' + lines.length);
+}
+
+function applyUpdateInput() {
+  const input = document.getElementById('update-input');
+  const v = input.value.trim();
+  if (v === '') return;
+  let num = parseInt(v, 10);
+  if (isNaN(num)) return;
+  // 10 → −10, −10 → −10, 0 → 0, любое сверх 10 → −10
+  num = -Math.max(0, Math.min(10, Math.abs(num)));
+  const wasZero = (state.problems.find(p => p.id === updatingProblemId) || {}).current === 0;
+  updateProblemValue(updatingProblemId, num);
+  closeModal('modal-update');
+  toast(num === 0 ? 'Победа! Проблема решена' : 'Значение обновлено');
+}
+
+function openUpdate(id) {
+  const p = state.problems.find(x => x.id === id);
+  if (!p) return;
+  updatingProblemId = id;
+  document.getElementById('update-text').textContent = p.text;
+  const historyText = p.history.map(h => (h.value === 0 ? '0' : '−' + Math.abs(h.value))).join(' → ');
+  document.getElementById('update-history').textContent = 'История: ' + historyText;
+  const grid = document.getElementById('value-grid');
+  grid.innerHTML = '';
+  for (let v = -10; v <= 0; v++) {
+    const btn = document.createElement('button');
+    btn.className = 'val-btn' + (v === p.current ? ' current' : '') + (v === 0 ? ' zero' : '');
+    btn.textContent = v === 0 ? '0' : '−' + Math.abs(v);
+    btn.onclick = () => {
+      updateProblemValue(id, v);
+      closeModal('modal-update');
+      toast(v === 0 ? 'Победа! Проблема решена' : 'Значение обновлено');
+    };
+    grid.appendChild(btn);
+  }
+  const input = document.getElementById('update-input');
+  input.value = '';
+  openModal('modal-update');
+  setTimeout(() => input.focus(), 80);
+}
+
+function confirmDelete() {
+  if (!updatingProblemId) return;
+  if (!confirm('Удалить эту проблему? Действие нельзя отменить.')) return;
+  deleteProblem(updatingProblemId);
+  closeModal('modal-update');
+  toast('Проблема удалена');
+}
+
+function renameProblem() {
+  if (!updatingProblemId) return;
+  const p = state.problems.find(x => x.id === updatingProblemId);
+  if (!p) return;
+  const newText = prompt('Текст проблемы:', p.text);
+  if (newText === null) return;
+  const trimmed = newText.trim();
+  if (!trimmed) { toast('Текст не может быть пустым'); return; }
+  if (trimmed === p.text) return;
+  p.text = trimmed;
+  saveState();
+  document.getElementById('update-text').textContent = trimmed;
+  renderAll();
+  toast('Текст обновлён');
+}
+
+function editGoal() {
+  const v = prompt('Сколько сессий в день делать (минимум 1)?', state.settings.dailyGoal);
+  if (v === null) return;
+  const n = parseInt(v, 10);
+  if (n && n >= 1 && n <= 20) {
+    setDailyGoal(n);
+    toast('Темп дня: ' + n + ' сессий');
+  }
+}
+
+function exportBackup() {
+  const data = JSON.stringify(state, null, 2);
+  const blob = new Blob([data], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'tracker_backup_' + today() + '.json';
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+  state.settings.sessionsSinceBackup = 0;
+  state.settings.backupReminderSnoozedUntil = 0;
+  state.settings.lastBackupDate = today();
+  state.settings.firstReminderShown = true;
+  saveState();
+  hideBackupReminder();
+  toast('Бэкап сохранён');
+}
+
+function maybeShowBackupReminder() {
+  const banner = document.getElementById('backup-reminder');
+  const textBlock = document.getElementById('backup-reminder-text');
+  if (!banner || !textBlock) return;
+  const settings = state.settings;
+  const every = settings.backupReminderEvery || 5;
+
+  // Welcome reminder: показывается один раз при первом запуске после обновления,
+  // если у пользователя уже есть проблемы (значит он не новенький)
+  if (settings.firstReminderShown === false && state.problems.length > 0) {
+    textBlock.innerHTML =
+      '<span class="backup-reminder-icon">●</span>' +
+      '<span>Сохрани копию сейчас — это страховка от потери.</span>';
+    banner.classList.remove('hidden');
+    return;
+  }
+
+  // Обычный режим: после N сессий
+  const n = settings.sessionsSinceBackup || 0;
+  const snoozedUntil = settings.backupReminderSnoozedUntil || 0;
+  if (n >= every && n >= snoozedUntil) {
+    textBlock.innerHTML =
+      '<span class="backup-reminder-icon">●</span>' +
+      '<span>Прошло <b>' + n + '</b> сессий без бэкапа. Сохрани копию, чтобы не потерять.</span>';
+    banner.classList.remove('hidden');
+  } else {
+    banner.classList.add('hidden');
+  }
+}
+
+function hideBackupReminder() {
+  const banner = document.getElementById('backup-reminder');
+  if (banner) banner.classList.add('hidden');
+}
+
+function snoozeBackupReminder() {
+  const settings = state.settings;
+  const every = settings.backupReminderEvery || 5;
+  // Welcome dismissed — переход в нормальный режим, без сдвига snooze
+  if (settings.firstReminderShown === false) {
+    settings.firstReminderShown = true;
+    saveState();
+    hideBackupReminder();
+    toast('Окей, напомню после ' + every + ' сессий');
+    return;
+  }
+  const n = settings.sessionsSinceBackup || 0;
+  settings.backupReminderSnoozedUntil = n + every;
+  saveState();
+  hideBackupReminder();
+  toast('Напомню через ' + every + ' сессий');
+}
+
+function importBackup() {
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = '.json,application/json';
+  input.onchange = async (e) => {
+    const file = e.target.files && e.target.files[0];
+    if (!file) return;
+    try {
+      const text = await file.text();
+      const imported = JSON.parse(text);
+      if (!imported || !Array.isArray(imported.problems)) {
+        alert('Неверный формат файла — это не бэкап трекера.');
+        return;
+      }
+      const summary = 'Проблем: ' + imported.problems.length +
+        ', сессий: ' + (imported.sessions ? imported.sessions.length : 0);
+      if (!confirm('Заменить все текущие данные на импортированные?\n' + summary)) return;
+      state = mergeWithInitial(imported);
+      saveState();
+      renderAll();
+      toast('Данные восстановлены');
+    } catch (err) {
+      alert('Не удалось прочитать файл: ' + err.message);
+    }
+  };
+  input.click();
+}
+
+// ============ LOCK / UNLOCK / SETUP ============
+function showLockScreen() {
+  document.getElementById('setup-screen').classList.add('hidden');
+  document.getElementById('lock-screen').classList.remove('hidden');
+  const hint = localStorage.getItem(HINT_KEY);
+  const hintBlock = document.getElementById('lock-hint-block');
+  if (hint) {
+    document.getElementById('lock-hint-text').textContent = hint;
+    hintBlock.classList.remove('hidden');
+  } else {
+    hintBlock.classList.add('hidden');
+  }
+  document.getElementById('lock-error').classList.add('hidden');
+  setTimeout(() => {
+    const inp = document.getElementById('lock-password');
+    if (inp) inp.focus();
+  }, 50);
+}
+
+function showSetupScreen() {
+  document.getElementById('lock-screen').classList.add('hidden');
+  document.getElementById('setup-screen').classList.remove('hidden');
+  document.getElementById('setup-error').classList.add('hidden');
+  setTimeout(() => {
+    const inp = document.getElementById('setup-password');
+    if (inp) inp.focus();
+  }, 50);
+}
+
+function hideAuthScreens() {
+  document.getElementById('lock-screen').classList.add('hidden');
+  document.getElementById('setup-screen').classList.add('hidden');
+}
+
+async function submitSetup(e) {
+  e.preventDefault();
+  const pwd1 = document.getElementById('setup-password').value;
+  const pwd2 = document.getElementById('setup-password2').value;
+  const hint = document.getElementById('setup-hint').value.trim();
+  const errorEl = document.getElementById('setup-error');
+  errorEl.classList.add('hidden');
+
+  if (pwd1.length < 4) {
+    errorEl.textContent = 'Пароль слишком короткий (минимум 4 символа)';
+    errorEl.classList.remove('hidden');
+    return false;
+  }
+  if (pwd1 !== pwd2) {
+    errorEl.textContent = 'Пароли не совпадают';
+    errorEl.classList.remove('hidden');
+    return false;
+  }
+
+  // Берём существующий state — либо legacy, либо пустой
+  const legacyRaw = localStorage.getItem(STATE_KEY);
+  let stateObj;
+  if (legacyRaw) {
+    try { stateObj = mergeWithInitial(JSON.parse(legacyRaw)); }
+    catch { stateObj = initialState(); }
+  } else {
+    stateObj = initialState();
+  }
+
+  try {
+    const packed = await encryptStateWithPassword(stateObj, pwd1);
+    localStorage.setItem(ENCRYPTED_KEY, JSON.stringify(packed));
+    if (hint) localStorage.setItem(HINT_KEY, hint);
+    else localStorage.removeItem(HINT_KEY);
+    if (legacyRaw) localStorage.removeItem(STATE_KEY);
+
+    state = stateObj;
+    document.getElementById('setup-password').value = '';
+    document.getElementById('setup-password2').value = '';
+    document.getElementById('setup-hint').value = '';
+    hideAuthScreens();
+    startApp();
+  } catch (err) {
+    errorEl.textContent = 'Ошибка шифрования: ' + err.message;
+    errorEl.classList.remove('hidden');
+  }
+  return false;
+}
+
+async function submitUnlock(e) {
+  e.preventDefault();
+  const pwd = document.getElementById('lock-password').value;
+  const errorEl = document.getElementById('lock-error');
+  errorEl.classList.add('hidden');
+
+  const encryptedRaw = localStorage.getItem(ENCRYPTED_KEY);
+  if (!encryptedRaw) {
+    errorEl.textContent = 'Зашифрованных данных нет';
+    errorEl.classList.remove('hidden');
+    return false;
+  }
+  try {
+    const packed = JSON.parse(encryptedRaw);
+    const decrypted = await decryptWithPassword(packed, pwd);
+    state = mergeWithInitial(decrypted);
+    document.getElementById('lock-password').value = '';
+    hideAuthScreens();
+    // Миграция: гарантируем что cached key и сохранённый envelope используют FIXED_SALT.
+    // Если в packed.salt была старая случайная соль — пересчитываем ключ и пересохраняем.
+    const needsMigration = packed.salt !== FIXED_SALT_B64;
+    if (needsMigration) {
+      const fixedKey = await deriveKey(pwd, b64ToBuf(FIXED_SALT_B64));
+      const rawKey = await crypto.subtle.exportKey('raw', fixedKey);
+      localStorage.setItem(KEY_CACHE_KEY, JSON.stringify({
+        rawKey: bufToB64(rawKey),
+        salt: FIXED_SALT_B64,
+      }));
+    }
+    startApp();
+    if (needsMigration) {
+      // ВАЖНО: не пушить пустой state на Диск (мог бы затереть данные другого устройства).
+      // Если локально есть проблемы — пересохраняем (это пушнет с новой солью).
+      // Если пусто — сначала пробуем подтянуть с Диска, потом решаем.
+      const hasProblems = state && state.problems && state.problems.length > 0;
+      if (hasProblems) {
+        saveState();
+      } else if (localStorage.getItem(YADISK_TOKEN_KEY)) {
+        // Локально пусто и есть Я.Диск — тянем с него
+        syncFromCloud().catch(err => console.warn('post-migration sync:', err));
+      }
+    }
+  } catch (err) {
+    errorEl.textContent = 'Неверный пароль';
+    errorEl.classList.remove('hidden');
+    document.getElementById('lock-password').select();
+  }
+  return false;
+}
+
+function lockApp() {
+  // Сбросить кэш ключа и показать экран блокировки
+  localStorage.removeItem(KEY_CACHE_KEY);
+  state = null;
+  showLockScreen();
+}
+
+async function showRestoreFromBackup() {
+  if (!confirm('Восстановить из JSON-бэкапа?\n\nЭто сотрёт текущие зашифрованные данные и попросит создать новый пароль.')) return;
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = '.json,application/json';
+  input.onchange = async (e) => {
+    const file = e.target.files && e.target.files[0];
+    if (!file) return;
+    try {
+      const text = await file.text();
+      const imported = JSON.parse(text);
+      if (!imported || !Array.isArray(imported.problems)) {
+        alert('Неверный формат файла — это не бэкап трекера.');
+        return;
+      }
+      // Кладём как legacy и сбрасываем зашифрованное
+      localStorage.setItem(STATE_KEY, JSON.stringify(imported));
+      localStorage.removeItem(ENCRYPTED_KEY);
+      localStorage.removeItem(KEY_CACHE_KEY);
+      localStorage.removeItem(HINT_KEY);
+      // Перезагружаем — увидит legacy и предложит создать новый пароль
+      location.reload();
+    } catch (err) {
+      alert('Не удалось прочитать файл: ' + err.message);
+    }
+  };
+  input.click();
+}
+
+// ============ MODE SWITCH ============
+function setMode(mode) {
+  state.currentMethod = mode;
+  saveState();
+  document.getElementById('mode-sks').classList.toggle('active', mode === 'sks');
+  document.getElementById('mode-mpp').classList.toggle('active', mode === 'mpp');
+  document.getElementById('report-btn').textContent = 'Сессия ' + methodLabel(mode) + ' выполнена!';
+}
+
+// ============ RENDER ============
+function sortProblems(list) {
+  const prioOrder = { high: 0, med: 1, low: 2 };
+  return [...list].sort((a, b) => {
+    if (prioOrder[a.priority] !== prioOrder[b.priority]) return prioOrder[a.priority] - prioOrder[b.priority];
+    return a.current - b.current;
+  });
+}
+
+function problemHTML(p) {
+  const zone = zoneOf(p.current);
+  const pct = progressPct(p.initial, p.current);
+  const delta = p.initial - p.current;
+  const trendText = p.current === 0 ? 'решена' : (delta === 0 ? '—' : '↓ ' + delta);
+  const valueText = p.current === 0 ? '0' : '−' + Math.abs(p.current);
+  const initialText = p.initial === 0 ? '0' : '−' + Math.abs(p.initial);
+  return `
+    <div class="problem" onclick="openUpdate('${p.id}')">
+      <div class="problem-stripe stripe-${zone}"></div>
+      <div class="priority priority-${p.priority}">${priorityLabel(p.priority)}</div>
+      <div class="problem-body">
+        <div class="problem-text">${escapeHTML(p.text)}</div>
+        <div class="problem-progress">
+          <span>${initialText}</span>
+          <div class="mini-bar"><div class="mini-bar-fill" style="width: ${pct}%;"></div></div>
+          <span>0</span>
+          <span style="min-width: 34px; text-align: right; color: var(--text-dim);">${pct}%</span>
+        </div>
+      </div>
+      <div class="problem-value v-${zone}">${valueText}</div>
+      <div class="problem-trend">${trendText}</div>
+    </div>
+  `;
+}
+function escapeHTML(s) {
+  return s.replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
+}
+
+function renderProblemsWithLimit(listEl, moreBtn, list, limit) {
+  const sorted = sortProblems(list);
+  const render = (n) => {
+    listEl.innerHTML = sorted.slice(0, n).map(problemHTML).join('') ||
+      '<div style="color: var(--text-dim); font-size: 14px; padding: 16px 0;">В этой секции пока нет проблем в работе.</div>';
+    const hidden = sorted.length - n;
+    if (hidden > 0) {
+      moreBtn.classList.remove('hidden');
+      moreBtn.textContent = 'Показать ещё ' + hidden;
+      moreBtn.onclick = () => {
+        listEl.innerHTML = sorted.map(problemHTML).join('');
+        moreBtn.classList.add('hidden');
+      };
+    } else {
+      moreBtn.classList.add('hidden');
+    }
+  };
+  render(limit);
+}
+
+function renderWon(listEl, list, countEl, sectionEl) {
+  const sorted = sortProblems(list);
+  listEl.innerHTML = sorted.map(problemHTML).join('');
+  if (countEl) countEl.textContent = list.length;
+  if (sectionEl) sectionEl.classList.toggle('hidden', list.length === 0);
+}
+
+// Metrics
+function renderDashboard() {
+  const all = state.problems;
+  const active = all.filter(p => p.current < 0);
+  const solved = all.filter(p => p.current === 0);
+
+  const totalInitial = all.reduce((sum, p) => sum + Math.abs(p.initial), 0);
+  const totalCurrent = all.reduce((sum, p) => sum + Math.abs(p.current), 0);
+  const recovered = totalInitial - totalCurrent;
+  const pct = totalInitial > 0 ? Math.round((recovered / totalInitial) * 100) : 0;
+
+  // Ring
+  const circumference = 2 * Math.PI * 56;
+  const offset = circumference * (1 - pct / 100);
+  document.getElementById('ring-fg').setAttribute('stroke-dashoffset', offset);
+  document.getElementById('ring-pct').textContent = pct + '%';
+
+  // Progress всего
+  document.getElementById('progress-value').innerHTML =
+    '+' + recovered + '<span style="font-size: 20px; color: var(--text-dim); font-weight: 400;"> из ' + totalInitial + '</span>';
+  document.getElementById('progress-initial').textContent = totalInitial === 0 ? '0' : '−' + totalInitial;
+  document.getElementById('progress-current').textContent = totalCurrent === 0 ? '0' : '−' + totalCurrent;
+  document.getElementById('progress-delta').textContent = '+' + recovered;
+
+  // Решено
+  const solvedCount = solved.length;
+  const totalCount = all.length;
+  const solvedPct = totalCount > 0 ? (solvedCount / totalCount * 100) : 0;
+  document.getElementById('solved-count').innerHTML =
+    solvedCount + '<span style="font-size: 22px; color: var(--text-dim); font-weight: 400;"> / ' + totalCount + '</span>';
+  document.getElementById('solved-pct').textContent = solvedPct.toFixed(1) + '%';
+  document.getElementById('solved-bar').style.width = solvedPct + '%';
+
+  // Серия дней
+  const streak = computeStreak();
+  const bestStreak = computeBestStreak();
+  document.getElementById('streak-count').textContent = streak;
+  document.getElementById('best-streak').textContent = bestStreak;
+
+  // Скорость — среднее за неделю
+  const weekAgo = new Date(); weekAgo.setDate(weekAgo.getDate() - 7);
+  const weekAgoStr = weekAgo.toISOString().slice(0, 10);
+  const weekUpdates = state.updates.filter(u => u.date >= weekAgoStr);
+  const weekDelta = weekUpdates.reduce((sum, u) => sum + u.delta, 0);
+  const speed = (weekDelta / 7).toFixed(1);
+  document.getElementById('speed-value').innerHTML =
+    speed + '<span style="font-size: 22px; color: var(--text-dim); font-weight: 400;"> /день</span>';
+
+  // До финиша
+  const finishDays = (speed > 0 && totalCurrent > 0) ? Math.ceil(totalCurrent / speed) + ' дн.' : '—';
+  document.getElementById('finish-days').textContent = finishDays;
+}
+
+function computeStreak() {
+  const sessionDays = new Set(state.sessions.map(s => s.date));
+  let days = 0;
+  const d = new Date();
+  for (let i = 0; i < 365; i++) {
+    const ds = d.toISOString().slice(0, 10);
+    if (sessionDays.has(ds)) {
+      days++;
+      d.setDate(d.getDate() - 1);
+    } else {
+      // если сегодня ещё нет сессии — проверяем со вчера
+      if (i === 0) { d.setDate(d.getDate() - 1); continue; }
+      break;
+    }
+  }
+  return days;
+}
+function computeBestStreak() {
+  const sessionDays = [...new Set(state.sessions.map(s => s.date))].sort();
+  let best = 0, cur = 0;
+  let prev = null;
+  for (const d of sessionDays) {
+    if (prev) {
+      const diff = Math.round((new Date(d) - new Date(prev)) / 86400000);
+      if (diff === 1) cur++;
+      else cur = 1;
+    } else cur = 1;
+    best = Math.max(best, cur);
+    prev = d;
+  }
+  return best;
+}
+
+function renderTodayBlock() {
+  document.getElementById('today-date').textContent = formatDate(today());
+  const active = state.problems.filter(p => p.current < 0);
+  const sorted = sortProblems(active);
+  const task = sorted[0];
+
+  const valEl = document.getElementById('today-value');
+  const textEl = document.getElementById('today-text');
+  if (task) {
+    const zone = zoneOf(task.current);
+    valEl.textContent = '−' + Math.abs(task.current);
+    valEl.className = 'today-task-value ' + zone;
+    textEl.textContent = task.text;
+    textEl.onclick = () => openUpdate(task.id);
+    textEl.style.cursor = 'pointer';
+  } else {
+    valEl.textContent = '—';
+    valEl.className = 'today-task-value';
+    textEl.textContent = 'Все проблемы решены';
+    textEl.onclick = null;
+    textEl.style.cursor = 'default';
+  }
+
+  // Темп дня
+  const todaySessions = state.sessions.filter(s => s.date === today()).length;
+  const goal = state.settings.dailyGoal;
+  const pct = Math.round(todaySessions / goal * 100);
+  document.getElementById('goal-count').innerHTML =
+    todaySessions + '<span class="of"> / ' + goal + '</span>';
+  const pctEl = document.getElementById('goal-pct');
+  pctEl.textContent = pct + '%';
+  pctEl.classList.toggle('over', pct > 100);
+  document.getElementById('goal-bar').style.width = Math.min(100, pct) + '%';
+}
+
+function renderHeatmap() {
+  const heatmap = document.getElementById('heatmap');
+  heatmap.innerHTML = '';
+  const sessionsByDay = {};
+  state.sessions.forEach(s => { sessionsByDay[s.date] = (sessionsByDay[s.date] || 0) + 1; });
+
+  // Определяем дату начала работы с трекером
+  let startDate = null;
+  state.problems.forEach(p => {
+    const d = (p.createdAt || '').slice(0, 10);
+    if (d && (!startDate || d < startDate)) startDate = d;
+  });
+  state.sessions.forEach(s => {
+    if (!startDate || s.date < startDate) startDate = s.date;
+  });
+  if (!startDate) startDate = today();
+
+  // Массив: сегодня первый (index 0), 60 дней назад последний (index 59)
+  const d = new Date();
+  const days = [];
+  for (let i = 0; i < 60; i++) {
+    const dt = new Date(d); dt.setDate(d.getDate() - i);
+    const ds = dt.toISOString().slice(0, 10);
+    days.push({ date: ds, count: sessionsByDay[ds] || 0 });
+  }
+  days.forEach((day, i) => {
+    const count = day.count;
+    const lvl = count === 0 ? 0 : Math.min(5, count);
+    const isInactive = day.date < startDate && count === 0;
+    const isToday = i === 0;
+    const classes = ['day'];
+    if (lvl) classes.push('l' + lvl);
+    if (isInactive) classes.push('inactive');
+    if (isToday) classes.push('today');
+    const el = document.createElement('div');
+    el.className = classes.join(' ');
+    if (lvl >= 5) el.innerHTML = emeraldSVG;
+    el.title = day.date + ': ' + (
+      isInactive ? 'до старта трекера' :
+      count === 0 ? 'нет сессий (пропуск)' :
+      count + (count === 1 ? ' сессия' : (count < 5 ? ' сессии' : '+ сессий'))
+    );
+    heatmap.appendChild(el);
+  });
+  document.getElementById('heatmap-start').textContent = formatDate(days[0].date);
+  document.getElementById('heatmap-end').textContent = formatDate(days[days.length - 1].date);
+
+  // Legend
+  const legendEl = document.getElementById('legend');
+  legendEl.innerHTML = '';
+  [0,1,2,3,4,5].forEach(lvl => {
+    const item = document.createElement('div');
+    item.style.cssText = 'display:flex;align-items:center;gap:6px;';
+    const sq = document.createElement('div');
+    sq.className = 'day' + (lvl ? ' l' + lvl : '');
+    if (lvl >= 5) sq.innerHTML = emeraldSVG;
+    const lbl = document.createElement('span');
+    lbl.className = 'legend-label';
+    lbl.textContent = lvl === 5 ? '5+' : String(lvl);
+    item.appendChild(sq);
+    item.appendChild(lbl);
+    legendEl.appendChild(item);
+  });
+}
+
+const emeraldSVG = `<svg class="emerald" viewBox="0 0 24 24" preserveAspectRatio="xMidYMid meet">
+  <text x="12" y="19" text-anchor="middle" font-size="20" fill="#ffffff" font-weight="600"
+        font-family="'Noto Sans Devanagari', 'Nirmala UI', 'Mangal', serif"
+        style="filter: drop-shadow(0 1px 1.5px rgba(0,0,0,0.5));">ॐ</text>
+</svg>`;
+
+function renderWeekly() {
+  const today0 = new Date();
+  const days = [];
+  for (let i = 6; i >= 0; i--) {
+    const d = new Date(today0); d.setDate(today0.getDate() - i);
+    const ds = d.toISOString().slice(0, 10);
+    const deltas = state.updates.filter(u => u.date === ds);
+    const sum = deltas.reduce((s, u) => s + u.delta, 0);
+    days.push({ date: ds, sum, day: d.getDay() });
+  }
+  const totalDelta = days.reduce((s, d) => s + d.sum, 0);
+
+  const weekAgo = new Date(); weekAgo.setDate(weekAgo.getDate() - 7);
+  const weekAgoStr = weekAgo.toISOString().slice(0, 10);
+  const solvedThisWeek = state.problems.filter(p => p.resolvedAt && p.resolvedAt >= weekAgoStr).length;
+
+  document.getElementById('week-delta').textContent = (totalDelta >= 0 ? '+' : '') + totalDelta;
+  document.getElementById('week-sub').textContent = 'баллов · ' + solvedThisWeek + (solvedThisWeek === 1 ? ' решена' : ' решены');
+
+  // Sparkline
+  const maxVal = Math.max(1, ...days.map(d => Math.abs(d.sum)));
+  const w = 280, h = 80, pad = 6;
+  const points = days.map((d, i) => {
+    const x = pad + (i * (w - 2 * pad) / 6);
+    const y = h - pad - ((d.sum + maxVal) / (maxVal * 2)) * (h - 2 * pad);
+    return [x, y];
+  });
+  const line = points.map(([x, y], i) => (i === 0 ? 'M' : 'L') + x + ',' + y).join(' ');
+  const area = line + ' L' + points[6][0] + ',' + h + ' L' + points[0][0] + ',' + h + ' Z';
+  const dots = points.map(([x, y]) => `<circle class="dot" cx="${x}" cy="${y}" r="3"/>`).join('');
+  document.getElementById('spark-svg').innerHTML =
+    `<path class="spark-area" d="${area}"/><path class="spark-line" d="${line}"/>${dots}`;
+
+  // Labels
+  const dayNames = ['Вс','Пн','Вт','Ср','Чт','Пт','Сб'];
+  document.getElementById('spark-labels').innerHTML = days.map(d => '<span>' + dayNames[d.day] + '</span>').join('');
+}
+
+function renderZones() {
+  const all = state.problems;
+  const zones = { red: 0, orange: 0, yellow: 0, green: 0 };
+  all.forEach(p => zones[zoneOf(p.current)]++);
+  document.getElementById('zone-red').textContent = zones.red;
+  document.getElementById('zone-orange').textContent = zones.orange;
+  document.getElementById('zone-yellow').textContent = zones.yellow;
+  document.getElementById('zone-green').textContent = zones.green;
+}
+
+function renderProblems() {
+  const sks = state.problems.filter(p => p.method === 'sks' && p.current < 0);
+  const sksWon = state.problems.filter(p => p.method === 'sks' && p.current === 0);
+  const mpp = state.problems.filter(p => p.method === 'mpp' && p.current < 0);
+  const mppWon = state.problems.filter(p => p.method === 'mpp' && p.current === 0);
+
+  renderProblemsWithLimit(
+    document.getElementById('list-sks'),
+    document.getElementById('btn-more-sks'),
+    sks, 10
+  );
+  renderProblemsWithLimit(
+    document.getElementById('list-mpp'),
+    document.getElementById('btn-more-mpp'),
+    mpp, 10
+  );
+  renderWon(
+    document.getElementById('list-sks-won'), sksWon,
+    document.getElementById('won-sks-count'),
+    document.getElementById('won-sks-section')
+  );
+  renderWon(
+    document.getElementById('list-mpp-won'), mppWon,
+    document.getElementById('won-mpp-count'),
+    document.getElementById('won-mpp-section')
+  );
+
+  document.getElementById('meta-sks').textContent =
+    sks.length + ' в работе · ' + sksWon.length + ' решено';
+  document.getElementById('meta-mpp').textContent =
+    mpp.length + ' в работе · ' + mppWon.length + ' решено';
+}
+
+function renderAll() {
+  const isEmpty = state.problems.length === 0;
+  document.getElementById('main').classList.toggle('hidden', isEmpty);
+  document.getElementById('empty-state').classList.toggle('hidden', !isEmpty);
+  if (isEmpty) return;
+
+  renderDashboard();
+  renderTodayBlock();
+  renderHeatmap();
+  renderWeekly();
+  renderZones();
+  renderProblems();
+}
+
+// ============ INIT ============
+function startApp() {
+  hideAuthScreens();
+  setMode(state.currentMethod || 'sks');
+  renderAll();
+  maybeShowBackupReminder();
+  // Статус облачной синхронизации
+  if (localStorage.getItem(YADISK_TOKEN_KEY)) {
+    updateSyncStatus('synced');
+    // В фоне пробуем подтянуть свежее из облака
+    syncFromCloud().catch(err => console.warn('initial sync failed:', err));
+  } else {
+    updateSyncStatus('unconnected');
+  }
+}
+
+document.getElementById('mode-sks').addEventListener('click', () => setMode('sks'));
+document.getElementById('mode-mpp').addEventListener('click', () => setMode('mpp'));
+document.getElementById('report-btn').addEventListener('click', () => {
+  if (state) recordSession(state.currentMethod);
+});
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    ['modal-new','modal-list','modal-update'].forEach(closeModal);
+  }
+});
+
+// Enter в поле ввода значения — применить
+document.getElementById('update-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter') {
+    e.preventDefault();
+    applyUpdateInput();
+  }
+});
+
+// Service Worker отключён намеренно — он кэшировал старый html-код и блокировал обновления.
+// Если на устройстве остался SW от прошлых версий — снимаем регистрацию и чистим кэш.
+if ('serviceWorker' in navigator && location.protocol !== 'file:') {
+  navigator.serviceWorker.getRegistrations()
+    .then(regs => regs.forEach(r => r.unregister()))
+    .catch(() => {});
+  if (typeof caches !== 'undefined') {
+    caches.keys()
+      .then(keys => keys.forEach(k => caches.delete(k)))
+      .catch(() => {});
+  }
+}
+
+// Главный async init flow
+(async function initAuth() {
+  try {
+    const encryptedRaw = localStorage.getItem(ENCRYPTED_KEY);
+    const legacyRaw = localStorage.getItem(STATE_KEY);
+
+    if (encryptedRaw) {
+      // Есть зашифрованные данные — пробуем кэш ключа
+      const packed = JSON.parse(encryptedRaw);
+      const decrypted = await decryptWithCachedKey(packed);
+      if (decrypted !== null) {
+        // Проверка миграции на FIXED_SALT — если cached key с старой случайной солью,
+        // принудительно показываем lock-screen чтобы пользователь ввёл пароль и сделал миграцию.
+        const cachedRaw = localStorage.getItem(KEY_CACHE_KEY);
+        if (cachedRaw) {
+          try {
+            const cached = JSON.parse(cachedRaw);
+            if (cached.salt !== FIXED_SALT_B64) {
+              showLockScreen();
+              return;
+            }
+          } catch {}
+        }
+        state = mergeWithInitial(decrypted);
+        startApp();
+        return;
+      }
+      // Кэша нет / невалиден — просим пароль
+      showLockScreen();
+      return;
+    }
+
+    // Незашифрованные данные есть → миграция через setup
+    // Совсем пусто → тоже setup (новый пользователь)
+    showSetupScreen();
+  } catch (err) {
+    console.error('init failed', err);
+    // Запасной путь — открыть пустой state, чтобы приложение не зависло
+    state = initialState();
+    startApp();
+  }
+})();
+</script>
+
+</body>
+</html>
