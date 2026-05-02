@@ -634,7 +634,7 @@
     line-height: 1;
   }
   /* Облако-кнопка: без фона/рамки, само облако цветное */
-  .yadisk-btn {
+  .cloud-btn {
     background: transparent;
     border: none;
     padding: 4px 8px;
@@ -646,24 +646,24 @@
     transition: transform 0.15s, filter 0.2s;
     color: var(--text-faint);
   }
-  .yadisk-btn:hover {
+  .cloud-btn:hover {
     transform: translateY(-1px);
     filter: brightness(1.15);
   }
-  .yadisk-icon {
+  .cloud-icon {
     display: block;
     width: 32px;
     height: 32px;
     transition: filter 0.2s;
     filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3));
   }
-  .yadisk-btn.unconnected { color: #6b7280; }
-  .yadisk-btn.synced { color: #10b981; }
-  .yadisk-btn.synced .yadisk-icon { filter: drop-shadow(0 0 6px rgba(16, 185, 129, 0.55)); }
-  .yadisk-btn.syncing { color: #4a9eff; animation: yadiskPulse 1.4s ease-in-out infinite; }
-  .yadisk-btn.error { color: #ef4444; }
-  .yadisk-btn.error .yadisk-icon { filter: drop-shadow(0 0 8px rgba(239, 68, 68, 0.6)); }
-  @keyframes yadiskPulse {
+  .cloud-btn.unconnected { color: #6b7280; }
+  .cloud-btn.synced { color: #10b981; }
+  .cloud-btn.synced .cloud-icon { filter: drop-shadow(0 0 6px rgba(16, 185, 129, 0.55)); }
+  .cloud-btn.syncing { color: #4a9eff; animation: cloudPulse 1.4s ease-in-out infinite; }
+  .cloud-btn.error { color: #ef4444; }
+  .cloud-btn.error .cloud-icon { filter: drop-shadow(0 0 8px rgba(239, 68, 68, 0.6)); }
+  @keyframes cloudPulse {
     0%, 100% { filter: drop-shadow(0 0 4px rgba(74, 158, 255, 0.3)); }
     50% { filter: drop-shadow(0 0 12px rgba(74, 158, 255, 0.7)); }
   }
@@ -1104,8 +1104,8 @@
     <button class="btn" onclick="importBackup()" title="Восстановить из ранее сохранённого файла">Восстановить</button>
     <button class="btn" onclick="openModal('modal-list')">+ Список</button>
     <button class="btn btn-primary" onclick="openModal('modal-new')">+ Новая</button>
-    <button class="yadisk-btn" onclick="openYadiskModal()" title="Яндекс.Диск синхронизация" id="yadisk-btn">
-      <svg class="yadisk-icon" viewBox="0 0 32 32" width="32" height="32" fill="currentColor" aria-hidden="true">
+    <button class="cloud-btn" onclick="openCloudModal()" title="GitHub синхронизация" id="cloud-btn">
+      <svg class="cloud-icon" viewBox="0 0 32 32" width="32" height="32" fill="currentColor" aria-hidden="true">
         <path d="M25.4 13.4C24.7 8.7 20.7 5 16 5c-3.7 0-6.9 2.1-8.5 5.2C3.5 10.5 0 14 0 18.3 0 22.6 3.4 26 7.7 26h17.5C29.1 26 32 23.1 32 19.4c0-3.5-2.6-6.4-6-6.9z"/>
       </svg>
     </button>
@@ -1412,12 +1412,12 @@
   </div>
 </div>
 
-<!-- Cloud password modal: для расшифровки данных с Я.Диска когда соли разные -->
+<!-- Cloud password modal: для расшифровки облачных данных когда соли разные -->
 <div class="modal-backdrop" id="cloud-pwd-modal" onclick="if(event.target===this) closeCloudPwdModal()">
   <div class="modal">
     <h2>Расшифровать облако</h2>
     <p class="modal-hint">
-      На Яндекс.Диске данные зашифрованы другим ключом, чем на этом устройстве.
+      В облаке данные зашифрованы другим ключом, чем на этом устройстве.
       Введи пароль (тот же что ты использовал на ПК) — облако расшифруется и подтянутся актуальные данные.
     </p>
     <form onsubmit="return submitCloudPwd(event)">
@@ -1432,28 +1432,28 @@
   </div>
 </div>
 
-<!-- Yandex Disk connect modal -->
-<div class="modal-backdrop" id="yadisk-modal" onclick="if(event.target===this) closeYadiskModal()">
+<!-- GitHub connect modal -->
+<div class="modal-backdrop" id="cloud-modal" onclick="if(event.target===this) closeCloudModal()">
   <div class="modal">
-    <h2>Подключить Яндекс.Диск</h2>
+    <h2>Подключить GitHub</h2>
     <p class="modal-hint">
-      Шаг 1. Открыта новая вкладка с Яндексом — авторизуйся и разреши доступ.<br>
-      Шаг 2. Яндекс покажет страницу с длинным токеном — скопируй её адресную строку или сам токен.<br>
-      Шаг 3. Вставь сюда:
+      Шаг 1. <a id="gh-token-link" href="https://github.com/settings/tokens/new?scopes=public_repo&description=Tracker%20sync" target="_blank" rel="noopener noreferrer">открой генерацию токена</a> (новая вкладка). Войди в GitHub если попросит.<br>
+      Шаг 2. Внизу страницы нажми <b>Generate token</b>. GitHub покажет длинную строку — она начинается на <code>ghp_</code><br>
+      Шаг 3. Скопируй её и вставь сюда:
     </p>
-    <form onsubmit="return submitYadiskToken(event)">
-      <input type="text" id="yadisk-token-input" class="lock-input"
-             placeholder="токен или URL после авторизации" autocomplete="off">
-      <div class="lock-error hidden" id="yadisk-error"></div>
+    <form onsubmit="return submitGhToken(event)">
+      <input type="text" id="cloud-token-input" class="lock-input"
+             placeholder="ghp_..." autocomplete="off">
+      <div class="lock-error hidden" id="cloud-token-error"></div>
       <div class="modal-actions">
-        <button type="button" class="btn" onclick="closeYadiskModal()">Отмена</button>
+        <button type="button" class="btn" onclick="closeCloudModal()">Отмена</button>
         <button type="submit" class="btn btn-primary">Подключить</button>
       </div>
     </form>
     <p style="margin-top: 14px; font-size: 12px; color: var(--text-faint); line-height: 1.5;">
-      После подключения все твои сохранения будут уезжать в зашифрованном виде в папку
-      «Приложения/Трекер проблем» на твоём Яндекс.Диске. Открыл сайт с другого устройства —
-      данные подтянутся оттуда.
+      После подключения все твои сохранения будут уезжать в зашифрованном виде в файл
+      <code>tracker_data.enc</code> этого же репозитория. Открыл сайт с другого устройства —
+      данные подтянутся.
     </p>
   </div>
 </div>
@@ -1618,10 +1618,10 @@ async function flushSaveState() {
       if (packed) {
         const envelope = { ...packed, updatedAt: new Date().toISOString(), version: 1 };
         localStorage.setItem(ENCRYPTED_KEY, JSON.stringify(envelope));
-        // ЗАЩИТА: на Диск пушим только если есть что пушить (не пустой state).
+        // ЗАЩИТА: в облако пушим только если есть что пушить (не пустой state).
         // Это предотвращает затирание данных другого устройства при первом локальном setup'е.
         const hasProblems = toSave.problems && toSave.problems.length > 0;
-        if (localStorage.getItem(YADISK_TOKEN_KEY) && hasProblems) {
+        if (localStorage.getItem(GH_TOKEN_KEY) && hasProblems) {
           syncToCloud(envelope).catch(err => console.warn('Cloud sync failed:', err));
         }
       }
@@ -1632,57 +1632,119 @@ async function flushSaveState() {
   }
 }
 
-// ============ ЯНДЕКС.ДИСК СИНХРОНИЗАЦИЯ ============
-const YADISK_TOKEN_KEY = 'tracker_yadisk_token';
-const YADISK_PATH = 'app:/tracker_data.enc';
-const YADISK_API = 'https://cloud-api.yandex.net/v1/disk';
+// ============ GITHUB СИНХРОНИЗАЦИЯ ============
+const GH_TOKEN_KEY = 'tracker_gh_token';
+const GH_SHA_KEY = 'tracker_gh_sha';
+const GH_FILE_PATH = 'tracker_data.enc';
+const GH_API = 'https://api.github.com';
+
+// Owner/repo берём из URL: forma0038.github.io/voda/ → owner=forma0038, repo=voda.
+// Для user-page (forma0038.github.io без подпапки) repo = '<user>.github.io'.
+function ghOwnerRepo() {
+  const m = location.hostname.match(/^([^.]+)\.github\.io$/i);
+  if (!m) return null;
+  const owner = m[1];
+  const segs = location.pathname.split('/').filter(Boolean);
+  const repo = segs[0] || (owner + '.github.io');
+  return { owner, repo };
+}
+
+function ghHeaders(token) {
+  return {
+    Authorization: `Bearer ${token}`,
+    Accept: 'application/vnd.github+json',
+    'X-GitHub-Api-Version': '2022-11-28',
+  };
+}
+
+function utf8ToB64(text) {
+  const bytes = new TextEncoder().encode(text);
+  let bin = '';
+  for (let i = 0; i < bytes.length; i++) bin += String.fromCharCode(bytes[i]);
+  return btoa(bin);
+}
+
+function b64ToUtf8(b64) {
+  const clean = b64.replace(/\s+/g, '');
+  const bin = atob(clean);
+  const bytes = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+  return new TextDecoder().decode(bytes);
+}
 
 let _syncInFlight = false;
 let _syncPending = null;
 let _lastSyncError = null;
 
-async function yadiskGetMeta() {
-  const token = localStorage.getItem(YADISK_TOKEN_KEY);
+async function ghGetMeta() {
+  const token = localStorage.getItem(GH_TOKEN_KEY);
   if (!token) return null;
-  const url = `${YADISK_API}/resources?path=${encodeURIComponent(YADISK_PATH)}&fields=modified,size`;
-  const resp = await fetch(url, { headers: { Authorization: `OAuth ${token}` } });
+  const ctx = ghOwnerRepo();
+  if (!ctx) throw new Error('Не github.io домен — не понимаю в какой репо синкать');
+  const url = `${GH_API}/repos/${ctx.owner}/${ctx.repo}/contents/${GH_FILE_PATH}`;
+  const resp = await fetch(url, { headers: ghHeaders(token) });
   if (resp.status === 404) return { exists: false };
-  if (!resp.ok) throw new Error('Yandex Disk meta error: ' + resp.status);
+  if (!resp.ok) throw new Error('GitHub meta error: ' + resp.status);
   const data = await resp.json();
-  return { exists: true, modified: data.modified, size: data.size };
+  return { exists: true, sha: data.sha, size: data.size };
 }
 
-async function yadiskDownload() {
-  const token = localStorage.getItem(YADISK_TOKEN_KEY);
+async function ghDownload() {
+  const token = localStorage.getItem(GH_TOKEN_KEY);
   if (!token) return null;
-  const r1 = await fetch(`${YADISK_API}/resources/download?path=${encodeURIComponent(YADISK_PATH)}`, {
-    headers: { Authorization: `OAuth ${token}` },
-  });
-  if (r1.status === 404) return null;
-  if (!r1.ok) throw new Error('Yandex Disk download URL error: ' + r1.status);
-  const { href } = await r1.json();
-  const r2 = await fetch(href);
-  if (!r2.ok) throw new Error('Yandex Disk file fetch error: ' + r2.status);
-  const text = await r2.text();
+  const ctx = ghOwnerRepo();
+  if (!ctx) throw new Error('Не github.io домен');
+  const url = `${GH_API}/repos/${ctx.owner}/${ctx.repo}/contents/${GH_FILE_PATH}`;
+  const resp = await fetch(url, { headers: ghHeaders(token) });
+  if (resp.status === 404) return null;
+  if (!resp.ok) throw new Error('GitHub download error: ' + resp.status);
+  const data = await resp.json();
+  localStorage.setItem(GH_SHA_KEY, data.sha);
+  const text = b64ToUtf8(data.content);
   try { return JSON.parse(text); }
-  catch { throw new Error('Файл на Диске повреждён или не JSON'); }
+  catch { throw new Error('Файл в репо повреждён или не JSON'); }
 }
 
-async function yadiskUpload(envelope) {
-  const token = localStorage.getItem(YADISK_TOKEN_KEY);
+async function ghUpload(envelope) {
+  const token = localStorage.getItem(GH_TOKEN_KEY);
   if (!token) return false;
-  const text = JSON.stringify(envelope);
-  const r1 = await fetch(`${YADISK_API}/resources/upload?path=${encodeURIComponent(YADISK_PATH)}&overwrite=true`, {
-    headers: { Authorization: `OAuth ${token}` },
-  });
-  if (!r1.ok) throw new Error('Yandex Disk upload URL error: ' + r1.status);
-  const { href, method } = await r1.json();
-  const r2 = await fetch(href, {
-    method: method || 'PUT',
-    headers: { 'Content-Type': 'application/json' },
-    body: text,
-  });
-  if (!r2.ok) throw new Error('Yandex Disk PUT error: ' + r2.status);
+  const ctx = ghOwnerRepo();
+  if (!ctx) throw new Error('Не github.io домен');
+  const url = `${GH_API}/repos/${ctx.owner}/${ctx.repo}/contents/${GH_FILE_PATH}`;
+  const contentB64 = utf8ToB64(JSON.stringify(envelope));
+  const message = 'Tracker sync ' + new Date().toISOString();
+
+  let sha = localStorage.getItem(GH_SHA_KEY);
+  if (!sha) {
+    const meta = await ghGetMeta();
+    if (meta && meta.exists) sha = meta.sha;
+  }
+
+  async function putOnce(useSha) {
+    const body = { message, content: contentB64 };
+    if (useSha) body.sha = useSha;
+    return fetch(url, {
+      method: 'PUT',
+      headers: { ...ghHeaders(token), 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    });
+  }
+
+  let resp = await putOnce(sha);
+  // 409/422 — sha устарел или нужен. Тащим свежий и повторяем.
+  if (resp.status === 409 || resp.status === 422) {
+    const meta = await ghGetMeta();
+    const freshSha = meta && meta.exists ? meta.sha : null;
+    resp = await putOnce(freshSha);
+  }
+  if (!resp.ok) {
+    const errText = await resp.text().catch(() => '');
+    throw new Error('GitHub PUT error: ' + resp.status + (errText ? ' ' + errText.slice(0, 200) : ''));
+  }
+  const data = await resp.json();
+  if (data.content && data.content.sha) {
+    localStorage.setItem(GH_SHA_KEY, data.content.sha);
+  }
   return true;
 }
 
@@ -1765,7 +1827,7 @@ async function submitCloudPwd(e) {
 }
 
 async function syncToCloud(envelope) {
-  if (!localStorage.getItem(YADISK_TOKEN_KEY)) return;
+  if (!localStorage.getItem(GH_TOKEN_KEY)) return;
   _syncPending = envelope;
   if (_syncInFlight) return;
   _syncInFlight = true;
@@ -1774,11 +1836,11 @@ async function syncToCloud(envelope) {
     const toUpload = _syncPending;
     _syncPending = null;
     try {
-      await yadiskUpload(toUpload);
+      await ghUpload(toUpload);
       _lastSyncError = null;
       updateSyncStatus('synced');
     } catch (err) {
-      _lastSyncError = 'Не удалось залить на Я.Диск: ' + (err.message || err);
+      _lastSyncError = 'Не удалось залить в GitHub: ' + (err.message || err);
       updateSyncStatus('error');
       console.warn('syncToCloud failed:', err);
       break;
@@ -1788,30 +1850,30 @@ async function syncToCloud(envelope) {
 }
 
 async function syncFromCloud() {
-  const token = localStorage.getItem(YADISK_TOKEN_KEY);
+  const token = localStorage.getItem(GH_TOKEN_KEY);
   if (!token) {
     updateSyncStatus('unconnected');
     return;
   }
   updateSyncStatus('syncing');
   try {
-    const remote = await yadiskDownload();
+    const remote = await ghDownload();
     const localRaw = localStorage.getItem(ENCRYPTED_KEY);
     const local = localRaw ? JSON.parse(localRaw) : null;
     const localProblems = (state && state.problems && state.problems.length) || 0;
 
     if (!remote) {
-      // На Диске нет файла — пушим локальный
+      // В репо нет файла — пушим локальный
       if (local) {
-        await yadiskUpload(local);
+        await ghUpload(local);
       }
       _lastSyncError = null;
       updateSyncStatus('synced');
       return;
     }
 
-    // ЗАЩИТА: если локально пусто, не дать перезаписать Диск пустотой.
-    // Всегда пытаемся ТЯНУТЬ с Диска когда локально нет проблем — независимо от updatedAt.
+    // ЗАЩИТА: если локально пусто, не дать перезаписать облако пустотой.
+    // Всегда пытаемся ТЯНУТЬ из облака когда локально нет проблем — независимо от updatedAt.
     if (localProblems === 0) {
       const decrypted = await decryptWithCachedKey(remote);
       if (decrypted) {
@@ -1821,10 +1883,10 @@ async function syncFromCloud() {
         _lastSyncError = null;
         updateSyncStatus('synced');
         const cnt = (state.problems && state.problems.length) || 0;
-        if (cnt > 0) toast('С Я.Диска подтянуто проблем: ' + cnt);
+        if (cnt > 0) toast('Из GitHub подтянуто проблем: ' + cnt);
         return;
       }
-      _lastSyncError = 'На Я.Диске данные шифрованы другим паролем. Введи на ПК тот же пароль и нажми «Заблокировать → разблокировать» чтобы обновить шифрование.';
+      _lastSyncError = 'В облаке данные шифрованы другим паролем. Введи на ПК тот же пароль и нажми «Заблокировать → разблокировать» чтобы обновить шифрование.';
       updateSyncStatus('error');
       toast('Пароль на устройствах должен совпадать');
       return;
@@ -1840,7 +1902,7 @@ async function syncFromCloud() {
         const remoteProblems = (decrypted.problems && decrypted.problems.length) || 0;
         // ВТОРАЯ ЗАЩИТА: если remote пустой а local имеет проблемы — пушим local
         if (remoteProblems === 0 && localProblems > 0) {
-          await yadiskUpload(local);
+          await ghUpload(local);
           _lastSyncError = null;
           updateSyncStatus('synced');
           toast('Облако было пустым — обновили из локального');
@@ -1851,10 +1913,10 @@ async function syncFromCloud() {
         renderAll();
         _lastSyncError = null;
         updateSyncStatus('synced');
-        toast('Синхронизировано с Я.Диском');
+        toast('Синхронизировано с GitHub');
         return;
       }
-      _lastSyncError = 'На Я.Диске данные шифрованы другим паролем — не смог расшифровать';
+      _lastSyncError = 'В облаке данные шифрованы другим паролем — не смог расшифровать';
       updateSyncStatus('error');
       toast('Облако шифровано другим паролем');
       return;
@@ -1864,45 +1926,39 @@ async function syncFromCloud() {
       // Локально свежее — пушим, НО только если локально что-то есть
       // (защита от затирания свежего облака пустотой свежего setup'а)
       if (localProblems > 0) {
-        await yadiskUpload(local);
+        await ghUpload(local);
       }
     }
     _lastSyncError = null;
     updateSyncStatus('synced');
   } catch (err) {
-    _lastSyncError = 'Не удалось скачать с Я.Диска: ' + (err.message || err);
+    _lastSyncError = 'Не удалось скачать из GitHub: ' + (err.message || err);
     updateSyncStatus('error');
     console.warn('syncFromCloud failed:', err);
   }
 }
 
 function updateSyncStatus(status) {
-  const btn = document.getElementById('yadisk-btn');
+  const btn = document.getElementById('cloud-btn');
   if (!btn) return;
   btn.classList.remove('syncing', 'synced', 'error', 'unconnected');
   btn.classList.add(status);
   const titles = {
-    unconnected: 'Я.Диск не подключён — нажми чтобы подключить',
+    unconnected: 'GitHub-синк не подключён — нажми чтобы подключить',
     syncing: 'Синхронизация…',
-    synced: 'Синхронизировано с Я.Диском',
+    synced: 'Синхронизировано с GitHub',
     error: 'Ошибка синхронизации — нажми для отключения/переподключения',
   };
-  btn.title = titles[status] || 'Я.Диск';
+  btn.title = titles[status] || 'GitHub';
 }
 
-// ============ UI: подключение/отключение Я.Диска ============
-function openYadiskModal() {
-  const token = localStorage.getItem(YADISK_TOKEN_KEY);
+// ============ UI: подключение/отключение GitHub-синка ============
+function openCloudModal() {
+  const token = localStorage.getItem(GH_TOKEN_KEY);
   if (!token) {
-    // Не подключено — открываем модалку подключения
-    window.open(
-      'https://oauth.yandex.ru/authorize?response_type=token&client_id=3068cea51ff340dbaf608f48de9fe73e',
-      '_blank',
-      'noopener'
-    );
-    document.getElementById('yadisk-modal').classList.add('open');
+    document.getElementById('cloud-modal').classList.add('open');
     setTimeout(() => {
-      const inp = document.getElementById('yadisk-token-input');
+      const inp = document.getElementById('cloud-token-input');
       if (inp) inp.focus();
     }, 100);
     return;
@@ -1911,85 +1967,83 @@ function openYadiskModal() {
   // Подключено — диалог в зависимости от статуса
   if (_lastSyncError) {
     const choice = prompt(
-      'ОШИБКА синхронизации с Я.Диском:\n' +
+      'ОШИБКА синхронизации с GitHub:\n' +
       _lastSyncError + '\n\n' +
       'Что делать?\n' +
       '1 — попробовать синхронизировать ещё раз\n' +
       '2 — переподключить токен (получить новый)\n' +
-      '3 — отключить Я.Диск\n' +
+      '3 — отключить GitHub-синк\n' +
       'Введи 1, 2 или 3:',
       '1'
     );
     if (choice === '1') {
       syncFromCloud();
     } else if (choice === '2') {
-      localStorage.removeItem(YADISK_TOKEN_KEY);
+      localStorage.removeItem(GH_TOKEN_KEY);
+      localStorage.removeItem(GH_SHA_KEY);
       _lastSyncError = null;
       updateSyncStatus('unconnected');
-      openYadiskModal();
+      openCloudModal();
     } else if (choice === '3') {
-      localStorage.removeItem(YADISK_TOKEN_KEY);
+      localStorage.removeItem(GH_TOKEN_KEY);
+      localStorage.removeItem(GH_SHA_KEY);
       _lastSyncError = null;
       updateSyncStatus('unconnected');
-      toast('Я.Диск отключён');
+      toast('GitHub-синк отключён');
     }
     return;
   }
 
   // Подключено и без ошибок — предлагаем синк сейчас или отключить
   const choice = prompt(
-    'Я.Диск подключён ✓\n\n' +
+    'GitHub-синк подключён ✓\n\n' +
     'Что сделать?\n' +
     '1 — синхронизировать сейчас\n' +
-    '2 — отключить Я.Диск\n' +
+    '2 — отключить\n' +
     'Введи 1 или 2:',
     '1'
   );
   if (choice === '1') {
     syncFromCloud();
   } else if (choice === '2') {
-    localStorage.removeItem(YADISK_TOKEN_KEY);
+    localStorage.removeItem(GH_TOKEN_KEY);
+    localStorage.removeItem(GH_SHA_KEY);
     updateSyncStatus('unconnected');
-    toast('Я.Диск отключён');
+    toast('GitHub-синк отключён');
   }
 }
 
-function closeYadiskModal() {
-  document.getElementById('yadisk-modal').classList.remove('open');
-  document.getElementById('yadisk-token-input').value = '';
-  document.getElementById('yadisk-error').classList.add('hidden');
+function closeCloudModal() {
+  document.getElementById('cloud-modal').classList.remove('open');
+  document.getElementById('cloud-token-input').value = '';
+  document.getElementById('cloud-token-error').classList.add('hidden');
 }
 
-async function submitYadiskToken(e) {
+async function submitGhToken(e) {
   e.preventDefault();
-  const raw = document.getElementById('yadisk-token-input').value.trim();
-  const errorEl = document.getElementById('yadisk-error');
+  const raw = document.getElementById('cloud-token-input').value.trim();
+  const errorEl = document.getElementById('cloud-token-error');
   errorEl.classList.add('hidden');
   if (!raw) {
-    errorEl.textContent = 'Вставь токен или URL';
+    errorEl.textContent = 'Вставь токен';
     errorEl.classList.remove('hidden');
     return false;
   }
-  // Поддерживаем 3 формата: чистый токен / URL с #access_token=... / просто строка содержащая access_token=
-  let token = raw;
-  const m = raw.match(/access_token=([A-Za-z0-9_\-]+)/);
-  if (m) {
-    token = m[1];
-  } else if (/^[A-Za-z0-9_\-]{20,}$/.test(raw)) {
-    token = raw;
-  }
-  // Проверяем токен запросом к API
+  const token = raw;
+  // Проверяем токен запросом к API: репо доступен?
   try {
-    const r = await fetch(`${YADISK_API}/resources?path=app:/`, {
-      headers: { Authorization: `OAuth ${token}` },
+    const ctx = ghOwnerRepo();
+    if (!ctx) throw new Error('Сайт открыт не на github.io — синк недоступен');
+    const r = await fetch(`${GH_API}/repos/${ctx.owner}/${ctx.repo}`, {
+      headers: ghHeaders(token),
     });
     if (r.status === 401) throw new Error('Токен невалидный (401). Получи новый.');
-    if (!r.ok) throw new Error('Яндекс ответил ' + r.status);
-    localStorage.setItem(YADISK_TOKEN_KEY, token);
-    closeYadiskModal();
-    toast('Я.Диск подключён ✓');
+    if (r.status === 404) throw new Error('Репо не найден или у токена нет прав. Нужен scope public_repo (или repo для приватного).');
+    if (!r.ok) throw new Error('GitHub ответил ' + r.status);
+    localStorage.setItem(GH_TOKEN_KEY, token);
+    closeCloudModal();
+    toast('GitHub подключён ✓');
     updateSyncStatus('synced');
-    // Сразу пробуем синк
     await syncFromCloud();
   } catch (err) {
     errorEl.textContent = err.message;
@@ -2516,12 +2570,12 @@ async function submitUnlock(e) {
     if (needsMigration) {
       // ВАЖНО: не пушить пустой state на Диск (мог бы затереть данные другого устройства).
       // Если локально есть проблемы — пересохраняем (это пушнет с новой солью).
-      // Если пусто — сначала пробуем подтянуть с Диска, потом решаем.
+      // Если пусто — сначала пробуем подтянуть из облака, потом решаем.
       const hasProblems = state && state.problems && state.problems.length > 0;
       if (hasProblems) {
         saveState();
-      } else if (localStorage.getItem(YADISK_TOKEN_KEY)) {
-        // Локально пусто и есть Я.Диск — тянем с него
+      } else if (localStorage.getItem(GH_TOKEN_KEY)) {
+        // Локально пусто и есть GitHub-токен — тянем оттуда
         syncFromCloud().catch(err => console.warn('post-migration sync:', err));
       }
     }
@@ -2937,7 +2991,7 @@ function startApp() {
   renderAll();
   maybeShowBackupReminder();
   // Статус облачной синхронизации
-  if (localStorage.getItem(YADISK_TOKEN_KEY)) {
+  if (localStorage.getItem(GH_TOKEN_KEY)) {
     updateSyncStatus('synced');
     // В фоне пробуем подтянуть свежее из облака
     syncFromCloud().catch(err => console.warn('initial sync failed:', err));
